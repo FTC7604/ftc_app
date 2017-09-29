@@ -12,15 +12,19 @@ public class MemeOp7604 extends OpMode {
     DcMotor FrontRight;
     DcMotor BackLeft;
     DcMotor BackRight;
+    DcMotor Lift;//High torque motor
 
     double power = 1;
     double powerLevels = 2;
+    int liftPower = 0;
     @Override
     public void init() {
         FrontLeft = hardwareMap.dcMotor.get("FrontLeft");
         FrontRight = hardwareMap.dcMotor.get("FrontRight");
         BackLeft = hardwareMap.dcMotor.get("BackLeft");
         BackRight = hardwareMap.dcMotor.get("BackRight");
+
+        Lift = hardwareMap.dcMotor.get("Lift");
 
         FrontLeft.setDirection(REVERSE);
         FrontRight.setDirection(REVERSE);
@@ -43,6 +47,10 @@ public class MemeOp7604 extends OpMode {
         FrontLeft.setPower((power / powerLevels) * (gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
         BackLeft.setPower((power / powerLevels) * (gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
         BackRight.setPower((power / powerLevels) * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
+
+        Lift.setPower(liftPower);
+
+        liftPower = ((gamepad1.dpad_up ? 1 : 0) + (gamepad1.dpad_down ? -1 : 0));
 
         if(gamepad1.x)
         {
