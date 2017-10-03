@@ -38,6 +38,13 @@ public class Robot7604
         //BackRight.setDirection(REVERSE);
     }
 
+    public void robotDrive(double power, double angle, double rotation){
+        FrontRight.setPower(power * (-Math.sin(angle) - Math.cos(angle) - rotation));
+        FrontLeft.setPower(power * (-Math.sin(angle) - Math.cos(angle) - rotation));
+        BackLeft.setPower(power * (-Math.sin(angle) - Math.cos(angle) - rotation));
+        BackRight.setPower(power * (-Math.sin(angle) - Math.cos(angle) - rotation));
+    }
+
     public void stop()
     {
         FrontLeft.setPower(0);
