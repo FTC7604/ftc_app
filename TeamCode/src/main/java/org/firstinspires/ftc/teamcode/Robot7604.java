@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
@@ -11,12 +12,18 @@ import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
 
 public class Robot7604
 {
+    DcMotor FrontLeft;
+    DcMotor FrontRight;
+    DcMotor BackLeft;
+    DcMotor BackRight;
+    DcMotor Lift;// High torque motor
+
     public Robot7604(OpMode op)
     {
         this(op.hardwareMap);
     }
 
-    public Robot7604(HardwareMap map)
+    public Robot7604(HardwareMap hardwareMap)
     {
         FrontLeft = hardwareMap.dcMotor.get("FrontLeft");
         FrontRight = hardwareMap.dcMotor.get("FrontRight");
@@ -29,5 +36,13 @@ public class Robot7604
         //FrontRight.setDirection(REVERSE);
         BackLeft.setDirection(REVERSE);
         //BackRight.setDirection(REVERSE);
+    }
+
+    public void stop()
+    {
+        FrontLeft.setPower(0);
+        FrontRight.setPower(0);
+        BackLeft.setPower(0);
+        BackRight.setPower(0);
     }
 }

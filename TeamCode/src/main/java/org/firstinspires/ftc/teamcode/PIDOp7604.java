@@ -1,27 +1,30 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp(name = "PID", group = "7604")
 public class PIDOp7604 extends LinearOpMode
 {
-	DcMotor FrontLeft;
-	DcMotor FrontRight;
-	DcMotor BackLeft;
-	DcMotor BackRight;
-	DcMotor Lift;// High torque motor
-
+    private Robot7604 robot;
     private static final double kP = 1, kI = 1, kD = 1;
+    private Context context;
+    private SensorManager sensorManager;
+    private Sensor sensor;
+
 	@Override
 	public void runOpMode()
 	{
-
+        robot = new Robot7604(this);
+        context = hardwareMap.appContext;
+        sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
 
         waitForStart();
 
@@ -30,14 +33,6 @@ public class PIDOp7604 extends LinearOpMode
 
         }
 
-        go(0);
+        robot.stop();
 	}
-	
-	private void go(double power)
-    {
-        FrontLeft.setPower(power);
-        FrontRight.setPower(power);
-        BackLeft.setPower(power);
-        BackRight.setPower(power);
-    }
 }
