@@ -10,36 +10,40 @@ import android.hardware.SensorManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class PIDAngleControl implements SensorEventListener
 {
-    private static final float kP = 1, kI = 1, kD = 1;
-    private float error, integral, derivative, bias;
-    private Context context;
+    private static final float mult = .1f;
+    private static final float kP = 1, kI = 0, kD = 0;
+    private float error, integral, derivative;
     private SensorManager sensorManager;
     private Sensor sensor;
+    private Telemetry telemetry = null;
 
     private float startingValue = -1;
     private float lastError = -1;
     private long lastTime = -1;
 
 
-	public PIDAngleControl(HardwareMap hardwareMap)
+	public PIDAngleControl(HardwareMap hardwareMap, Telemetry telemetry)
 	{
-        context = hardwareMap.appContext;
+        Context context = hardwareMap.appContext;
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
+        this.telemetry = telemetry;
     }
 
     public PIDAngleControl(OpMode op)
     {
-        this(op.hardwareMap);
+        this(op.hardwareMap, op.telemetry);
     }
 
 
     public void startPID()
     {
         startingValue = -1;
-        error = integral = derivative = bias = 0;
+        error = integral = derivative = 0;
         sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
@@ -50,13 +54,21 @@ public class PIDAngleControl implements SensorEventListener
 
     public float getValue()
     {
-        return kP * error + kI * integral + kD * derivative + bias;
+        float value = (mult * kP * error) + (mult * kI * integral) + (mult * kD * derivative);
+
+        telemetry.addData("error", error);
+        telemetry.addData("integral", integral);
+        telemetry.addData("differential", derivative);
+        telemetry.addData("value", value);
+        telemetry.update();
+
+        return value;
     }
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent)
     {
-        float[] rotation = new float[3], orientation = new float[3];
+        float[] rotation = new float[9], orientation = new float[3];
         SensorManager.getRotationMatrixFromVector(rotation, sensorEvent.values);
         SensorManager.getOrientation(rotation, orientation);
 
@@ -78,6 +90,12 @@ public class PIDAngleControl implements SensorEventListener
             long currentTime = System.currentTimeMillis(), elapsedTime = currentTime - lastTime;
 
             error = modStartingValue - azimuth;
+
+            telemetry.addData("starting value", startingValue);
+            telemetry.addData("starting value (mod)", modStartingValue);
+            telemetry.addData("azimuth", azimuth);
+            telemetry.update();
+
             integral = integral + (error * elapsedTime);
             derivative = (error - lastError) / elapsedTime;
 

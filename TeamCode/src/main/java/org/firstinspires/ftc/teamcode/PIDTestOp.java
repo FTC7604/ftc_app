@@ -32,12 +32,16 @@ public class PIDTestOp extends OpMode
     public void loop()
     {
         double value = pid.getValue();
-        robot
+        robot.drive(.4f, Math.PI / 2, value);
     }
+
+
+
 
     @Override
     public void stop()
     {
+        robot.stop();
         pid.stopPID();
     }
 }
