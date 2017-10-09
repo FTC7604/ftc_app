@@ -32,10 +32,17 @@ public class Robot7604
 
         Lift = hardwareMap.dcMotor.get("Lift");
 
-        FrontLeft.setDirection(REVERSE);
-        //FrontRight.setDirection(REVERSE);
-        BackLeft.setDirection(REVERSE);
-        //BackRight.setDirection(REVERSE);
+        //FrontLeft.setDirection(REVERSE);
+        FrontRight.setDirection(REVERSE);
+        //BackLeft.setDirection(REVERSE);
+        BackRight.setDirection(REVERSE);
+    }
+
+    public void drive(double power, double angle, double rotation){
+        FrontRight.setPower(power * (Math.sin(angle) - Math.cos(angle) + rotation));
+        FrontLeft.setPower(power * (Math.sin(angle) + Math.cos(angle) - rotation));
+        BackLeft.setPower(power * (Math.sin(angle) - Math.cos(angle) - rotation));
+        BackRight.setPower(power * (Math.sin(angle) + Math.cos(angle) + rotation));
     }
 
     public void stop()
@@ -44,5 +51,6 @@ public class Robot7604
         FrontRight.setPower(0);
         BackLeft.setPower(0);
         BackRight.setPower(0);
+        Lift.setPower(0);
     }
 }
