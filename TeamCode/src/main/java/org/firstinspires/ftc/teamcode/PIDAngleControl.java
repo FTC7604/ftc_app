@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class PIDAngleControl implements SensorEventListener
 {
     private static final float mult = .1f;
-    private static final float kP = 1, kI = 0, kD = 0;
+    private static final float kP = 1, kI = 0.001f, kD = 100;
     private float error, integral, derivative;
     private SensorManager sensorManager;
     private Sensor sensor;
@@ -82,11 +82,12 @@ public class PIDAngleControl implements SensorEventListener
         else
         {
             float modStartingValue = startingValue;
+            /*
             while(modStartingValue < azimuth)
             {
                 modStartingValue += 6.2831854820251465f; // Max precision float value for 2PI
             }
-
+            */
             long currentTime = System.currentTimeMillis(), elapsedTime = currentTime - lastTime;
 
             error = modStartingValue - azimuth;

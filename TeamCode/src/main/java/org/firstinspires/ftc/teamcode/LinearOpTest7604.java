@@ -25,24 +25,12 @@ public class LinearOpTest7604 extends LinearOpMode
             robot.drive(0.5,(Math.PI)/2,0);
 
         }
-
         while(time < 4){
 
-            robot.drive(0.5,(Math.PI),0);
+            robot.drive(0,0,1);
 
         }
 
-        while(time < 6){
-
-            robot.drive(0.5,3*(Math.PI)/2,0);
-
-        }
-
-        while(time < 8){
-
-            robot.drive(0.5,0,0);
-
-        }
 
 
         robot.stop();

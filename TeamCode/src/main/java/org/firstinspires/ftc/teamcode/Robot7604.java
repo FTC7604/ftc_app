@@ -17,6 +17,7 @@ public class Robot7604
     DcMotor BackLeft;
     DcMotor BackRight;
     DcMotor Lift;// High torque motor
+    DcMotor Slide;
 
     public Robot7604(OpMode op)
     {
@@ -32,6 +33,8 @@ public class Robot7604
 
         Lift = hardwareMap.dcMotor.get("Lift");
 
+        Slide = hardwareMap.dcMotor.get("Slide");
+
         //FrontLeft.setDirection(REVERSE);
         FrontRight.setDirection(REVERSE);
         //BackLeft.setDirection(REVERSE);
@@ -39,10 +42,10 @@ public class Robot7604
     }
 
     public void drive(double power, double angle, double rotation){
-        FrontRight.setPower(power * (Math.sin(angle) - Math.cos(angle) + rotation));
-        FrontLeft.setPower(power * (Math.sin(angle) + Math.cos(angle) - rotation));
-        BackLeft.setPower(power * (Math.sin(angle) - Math.cos(angle) - rotation));
-        BackRight.setPower(power * (Math.sin(angle) + Math.cos(angle) + rotation));
+        FrontRight.setPower(power * (Math.sin(angle) - Math.cos(angle)) - rotation);
+        FrontLeft.setPower(power * (Math.sin(angle) + Math.cos(angle)) + rotation);
+        BackLeft.setPower(power * (Math.sin(angle) - Math.cos(angle)) + rotation);
+        BackRight.setPower(power * (Math.sin(angle) + Math.cos(angle)) - rotation);
     }
 
     public void stop()
@@ -52,5 +55,6 @@ public class Robot7604
         BackLeft.setPower(0);
         BackRight.setPower(0);
         Lift.setPower(0);
+        Slide.setPower(0);
     }
 }
