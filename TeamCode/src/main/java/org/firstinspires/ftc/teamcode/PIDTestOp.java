@@ -32,7 +32,7 @@ public class PIDTestOp extends OpMode
     public void loop()
     {
         double value = pid.getValue();
-        robot.drive(.2f, Math.PI / 2, value);
+        robot.drive(.2f, (Math.PI / 2) - 0.32f, value);
     }
 
 

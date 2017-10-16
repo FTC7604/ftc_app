@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class PIDAngleControl implements SensorEventListener
 {
     private static final float mult = .1f;
-    private static final float kP = 1, kI = 0.001f, kD = 100;
+    private static final float kP = 2, kI = 2f, kD = 0.5f;
     private float error, integral, derivative;
     private SensorManager sensorManager;
     private Sensor sensor;
@@ -88,9 +88,10 @@ public class PIDAngleControl implements SensorEventListener
                 modStartingValue += 6.2831854820251465f; // Max precision float value for 2PI
             }
             */
-            long currentTime = System.currentTimeMillis(), elapsedTime = currentTime - lastTime;
+            long currentTime = System.currentTimeMillis();
+            float elapsedTime = 0.001f * (currentTime - lastTime);
 
-            error = modStartingValue - azimuth;
+            error = modStartingValue -                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   azimuth;
 
             telemetry.addData("starting value", startingValue);
             telemetry.addData("starting value (mod)", modStartingValue);
