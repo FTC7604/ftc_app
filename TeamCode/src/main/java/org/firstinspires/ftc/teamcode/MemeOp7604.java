@@ -24,6 +24,11 @@ public class MemeOp7604 extends OpMode {
     double power = 1;
     double powerLevels = 2;
     int liftPower = 0;
+
+    double twistValue = 0;
+    double uperValue = 0;
+
+
     @Override
     public void init() {
         FrontLeft = hardwareMap.dcMotor.get("FrontLeft");
@@ -90,12 +95,29 @@ public class MemeOp7604 extends OpMode {
 
         Slide.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
 
-        Twister.setPosition(gamepad2.dpad_left ? 1 : gamepad2.dpad_right ? -1 : 0); // FIXME
+        if(gamepad2.dpad_left){
+            twistValue += (twistValue == 1 ? 0 : 0.1);
+        }
+        if(gamepad2.dpad_right){
+            twistValue -= (twistValue == 0 ? 0 : 0.1);
+        }
 
-        LeftHook.setPosition(gamepad2.right_bumper ? 1 : gamepad2.left_bumper ? -1 : 0); //FIXME
-        RightHook.setPosition(gamepad2.right_bumper ? -1 : gamepad2.left_bumper ? 1 : 0); //FIXME
+        Twister.setPosition(twistValue);
 
-        Upercut.setPosition(gamepad2.x ? 1 : gamepad2.b ? -1 : 0); //FIXME
+
+        if(gamepad2.right_bumper || gamepad2.left_bumper){
+            LeftHook.setPosition(gamepad2.right_bumper ? 1 : 0);
+            RightHook.setPosition(gamepad2.right_bumper ? 0 : 1);
+        }
+
+        if(gamepad2.x){
+            uperValue += (uperValue == 1 ? 0 : 0.1);
+        }
+        if(gamepad2.b){
+            uperValue -= (uperValue == 0 ? 0 : 0.1);
+        }
+
+        Upercut.setPosition(uperValue);
 
     }
 
