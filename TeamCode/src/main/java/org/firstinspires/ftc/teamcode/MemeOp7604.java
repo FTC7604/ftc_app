@@ -26,7 +26,9 @@ public class MemeOp7604 extends OpMode {
     int liftPower = 0;
 
     double twistValue = 0;
-    double uperValue = 0;
+    double uperValue = 0.5;
+
+    boolean uperPressed = false;
 
 
     @Override
@@ -66,9 +68,9 @@ public class MemeOp7604 extends OpMode {
         BackLeft.setPower((power / powerLevels) * (gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
         BackRight.setPower((power / powerLevels) * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
 
-        Lift.setPower(liftPower);
-
         liftPower = ((gamepad1.dpad_up ? 1 : 0) + (gamepad1.dpad_down ? -1 : 0));
+
+        Lift.setPower(liftPower);
 
         if(gamepad1.x)
         {
@@ -96,14 +98,18 @@ public class MemeOp7604 extends OpMode {
         Slide.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
 
         if(gamepad2.dpad_left){
-            twistValue += (twistValue == 1 ? 0 : 0.1);
+            //twistValue += (twistValue == 1 ? 0 : 0.1);
+            twistValue = 0;
         }
-        if(gamepad2.dpad_right){
-            twistValue -= (twistValue == 0 ? 0 : 0.1);
+        else if(gamepad2.dpad_right){
+            //twistValue -= (twistValue == 0 ? 0 : 0.1);
+            twistValue = 1;
+        }
+        else{
+            twistValue = 0.5;
         }
 
         Twister.setPosition(twistValue);
-
 
         if(gamepad2.right_bumper || gamepad2.left_bumper){
             LeftHook.setPosition(gamepad2.right_bumper ? 1 : 0);
@@ -111,10 +117,19 @@ public class MemeOp7604 extends OpMode {
         }
 
         if(gamepad2.x){
-            uperValue += (uperValue == 1 ? 0 : 0.1);
+            if(!uperPressed) {
+                uperValue += (uperValue >= 1 ? 0 : 0.5);
+                uperPressed = true;
+            }
         }
-        if(gamepad2.b){
-            uperValue -= (uperValue == 0 ? 0 : 0.1);
+        else if(gamepad2.y){
+            if(!uperPressed){
+                uperValue -= (uperValue <= 0 ? 0 : 0.5);
+                uperPressed = true;
+            }
+        }
+        else{
+            uperPressed = false;
         }
 
         Upercut.setPosition(uperValue);
