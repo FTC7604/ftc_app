@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
 
 @TeleOp(name = "A Quality Pull Request", group = "7604")
@@ -16,10 +18,12 @@ public class MemeOp7604 extends OpMode {
     DcMotor BackRight;
     DcMotor Lift;//High torque motor
     DcMotor Slide;
+    DcMotor SvingerDvinger;
 
     Servo LeftHook, RightHook;
     Servo Twister;
     Servo Upercut;
+    Servo LeftGrip, RightGrip;
 
     double power = 1;
     double powerLevels = 2;
@@ -28,7 +32,10 @@ public class MemeOp7604 extends OpMode {
     double twistValue = 0;
     double uperValue = 0.5;
 
+    boolean gripPressed = false;
     boolean uperPressed = false;
+
+    double gripValue = 0;
 
 
     @Override
@@ -38,6 +45,7 @@ public class MemeOp7604 extends OpMode {
         BackLeft = hardwareMap.dcMotor.get("BackLeft");
         BackRight = hardwareMap.dcMotor.get("BackRight");
         Slide = hardwareMap.dcMotor.get("Slide");
+        SvingerDvinger = hardwareMap.dcMotor.get("SvingerDvinger");
 
         Lift = hardwareMap.dcMotor.get("Lift");
 
@@ -45,11 +53,15 @@ public class MemeOp7604 extends OpMode {
         RightHook = hardwareMap.servo.get("RightHook");
         Twister = hardwareMap.servo.get("Twister");
         Upercut = hardwareMap.servo.get("Upercut");
+        LeftGrip = hardwareMap.servo.get("LeftGrip");
+        RightGrip = hardwareMap.servo.get("RightGrip");
 
         FrontLeft.setDirection(REVERSE);
         FrontRight.setDirection(REVERSE);
         BackLeft.setDirection(REVERSE);
         BackRight.setDirection(REVERSE);
+
+        Telemetry telemetry = this.telemetry;
     }
 
     @Override
@@ -95,14 +107,32 @@ public class MemeOp7604 extends OpMode {
             }
         }
 
+        SvingerDvinger.setPower(gamepad1.x ? 1 : gamepad1.y ? -1 : 0);
+
+        if(gamepad1.right_bumper){
+            gripValue = 0.1;
+        }
+        else if(gamepad1.left_bumper){
+            gripValue = -0.1;
+        }
+        else{
+            gripValue = 0;
+        }
+
+        LeftGrip.setPosition(0.5 - gripValue);
+        RightGrip.setPosition(0.5 + gripValue);
+
+
+
+
+        // --------------------------- Second controller
+
         Slide.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
 
         if(gamepad2.dpad_left){
-            //twistValue += (twistValue == 1 ? 0 : 0.1);
             twistValue = 0;
         }
         else if(gamepad2.dpad_right){
-            //twistValue -= (twistValue == 0 ? 0 : 0.1);
             twistValue = 1;
         }
         else{
@@ -133,6 +163,11 @@ public class MemeOp7604 extends OpMode {
         }
 
         Upercut.setPosition(uperValue);
+
+
+
+        telemetry.addData("gripValue", gripValue);
+        telemetry.update();
 
     }
 
