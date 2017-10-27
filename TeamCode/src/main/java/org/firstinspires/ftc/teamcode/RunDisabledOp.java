@@ -1,13 +1,17 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.view.View;
+import android.widget.RelativeLayout;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.internal.opmode.ClassFilter;
+import org.firstinspires.ftc.ftccommon.teamcode.DisabledOpClassFilter;
 
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -15,65 +19,89 @@ import java.util.List;
  *
  */
 
-@Autonomous(name="Sample Selection")
-public class RunDisabledOp extends OpMode implements ClassFilter
+@TeleOp(name="Disabled Selection")
+public class RunDisabledOp extends OpMode
 {
-    private List<Class> classes = new LinkedList<>();
+    private OpMode selectedOp = null;
+    private boolean runInit = false;
 
     @Override
     public void init()
     {
+        final List<Class> classes = DisabledOpClassFilter.getInstance().classes;
+        String[] classNames = new String[classes.size()];
 
+        for (int i = 0; i < classes.size(); i++)
+        {
+            //classNames[i] = classes.get(i).getName();
+            classNames[i] = classes.get(i).getSimpleName();
+        }
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(hardwareMap.appContext);
+        builder.setTitle("Select a Disabled OpMode to run")
+                .setItems(classNames, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        try
+                        {
+                            selectedOp = (OpMode) classes.get(which).newInstance();
+                            runInit = true;
+
+                            selectedOp.hardwareMap = RunDisabledOp.this.hardwareMap;
+                            selectedOp.gamepad1 = RunDisabledOp.this.gamepad1;
+                            selectedOp.gamepad2 = RunDisabledOp.this.gamepad2;
+                            selectedOp.telemetry= RunDisabledOp.this.telemetry;
+                        }
+                        catch(Exception e)
+                        {
+                            telemetry.addData("Error", "Unable to instantiate OpMode due to: " + e.getClass().getName());
+                            telemetry.update();
+                        }
+                    }
+                });
+
+
+        int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
+        View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
+        relativeLayout.post(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                builder.create().show();
+            }
+        });
+    }
+
+    @Override
+    public void init_loop()
+    {
+        if(runInit)
+        {
+            runInit = false;
+            selectedOp.init();
+        }
+        else if(selectedOp != null)
+        {
+            selectedOp.init_loop();
+        }
+    }
+
+    @Override
+    public void start()
+    {
+        selectedOp.start();
     }
 
     @Override
     public void loop()
     {
-
-    }
-
-    //Class filter
-    @Override
-    public void filterAllClassesStart()
-    {
-        classes.clear();
+        //selectedOp.time = time;
+        //selectedOp.loop();
     }
 
     @Override
-    public void filterOnBotJavaClassesStart()
+    public void stop()
     {
-    }
-
-    @Override
-    public void filterClass(Class clazz)
-    {
-        if(clazz.getAnnotation(Autonomous.class) != null || clazz.getAnnotation(TeleOp.class) != null)
-        {
-            if(clazz.getAnnotation(Disabled.class )!= null)
-            {
-                if(clazz.isAssignableFrom(OpMode.class))
-                {
-                    classes.add(clazz);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void filterOnBotJavaClass(Class clazz)
-    {
-
-    }
-
-    @Override
-    public void filterAllClassesComplete()
-    {
-
-    }
-
-    @Override
-    public void filterOnBotJavaClassesComplete()
-    {
-
+        //selectedOp.stop();
     }
 }
