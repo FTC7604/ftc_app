@@ -1,4 +1,3 @@
-
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -11,7 +10,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
 
 @TeleOp(name = "A Quality Pull Request", group = "7604")
-public class MemeOp7604 extends OpMode {
+public class MemeOp7604 extends OpMode{
+
+
+
     DcMotor FrontLeft;
     DcMotor FrontRight;
     DcMotor BackLeft;
@@ -107,7 +109,7 @@ public class MemeOp7604 extends OpMode {
             }
         }
 
-        SvingerDvinger.setPower(gamepad1.x ? 1 : gamepad1.y ? -1 : 0);
+        SvingerDvinger.setPower(gamepad1.y ? 1 : gamepad1.x ? -1 : 0);
 
         if(gamepad1.right_bumper){
             gripValue = 0.1;
@@ -119,7 +121,7 @@ public class MemeOp7604 extends OpMode {
             gripValue = 0;
         }
 
-        LeftGrip.setPosition(0.5 - gripValue);
+        LeftGrip.setPosition(0.5 + gripValue);
         RightGrip.setPosition(0.5 + gripValue);
 
 
@@ -163,8 +165,6 @@ public class MemeOp7604 extends OpMode {
         }
 
         Upercut.setPosition(uperValue);
-
-
 
         telemetry.addData("gripValue", gripValue);
         telemetry.update();
