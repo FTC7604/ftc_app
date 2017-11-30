@@ -19,7 +19,7 @@ public class MiniRobot7604 extends Robot7604
 
     public MiniRobot7604(HardwareMap hardwareMap)
     {
-        super();
+        super(hardwareMap);
 
         FrontLeft = hardwareMap.dcMotor.get("FrontLeft");
         FrontRight = hardwareMap.dcMotor.get("FrontRight");
