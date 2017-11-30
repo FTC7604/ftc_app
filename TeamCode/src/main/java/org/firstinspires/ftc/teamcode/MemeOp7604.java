@@ -26,13 +26,14 @@ public class MemeOp7604 extends OpMode{
     Servo Twister;
     Servo Upercut;
     Servo LeftGrip, RightGrip;
+    Servo LeftGripBottom, RightGripBottom;
 
     double power = 1;
-    double powerLevels = 2;
+    double powerLevels = 1;
     int liftPower = 0;
 
     double twistValue = 0;
-    double uperValue = 0.5;
+    double uperValue = 0;
 
     boolean gripPressed = false;
     boolean uperPressed = false;
@@ -57,6 +58,8 @@ public class MemeOp7604 extends OpMode{
         Upercut = hardwareMap.servo.get("Upercut");
         LeftGrip = hardwareMap.servo.get("LeftGrip");
         RightGrip = hardwareMap.servo.get("RightGrip");
+        LeftGripBottom = hardwareMap.servo.get("LeftGripBottom");
+        RightGripBottom = hardwareMap.servo.get("RightGripBottom");
 
         FrontLeft.setDirection(REVERSE);
         FrontRight.setDirection(REVERSE);
@@ -77,10 +80,10 @@ public class MemeOp7604 extends OpMode{
     @Override
     public void loop() {
 
-        FrontRight.setPower((power / powerLevels) * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
+        FrontRight.setPower((power / powerLevels) * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
         FrontLeft.setPower((power / powerLevels) * (gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
         BackLeft.setPower((power / powerLevels) * (gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
-        BackRight.setPower((power / powerLevels) * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
+        BackRight.setPower((power / powerLevels) * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
 
         liftPower = ((gamepad1.dpad_up ? 1 : 0) + (gamepad1.dpad_down ? -1 : 0));
 
@@ -111,18 +114,21 @@ public class MemeOp7604 extends OpMode{
 
         SvingerDvinger.setPower(gamepad1.y ? 1 : gamepad1.x ? -1 : 0);
 
-        if(gamepad1.right_bumper){
-            gripValue = 0.1;
+        if(gamepad1.left_bumper){
+            gripValue = 0.5;
         }
-        else if(gamepad1.left_bumper){
-            gripValue = -0.1;
+        else if(gamepad1.right_bumper){
+            gripValue = 0;
         }
+        /*
         else{
             gripValue = 0;
         }
-
+        */
         LeftGrip.setPosition(0.5 + gripValue);
-        RightGrip.setPosition(0.5 + gripValue);
+        LeftGripBottom.setPosition(0.5 + gripValue);
+        RightGrip.setPosition(0.5 - gripValue);
+        RightGripBottom.setPosition(0.5 - gripValue);
 
 
 
