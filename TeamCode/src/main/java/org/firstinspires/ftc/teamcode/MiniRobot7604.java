@@ -1,48 +1,32 @@
 package org.firstinspires.ftc.teamcode;
 
+import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
 
 /**
  * Created by ssuri on 10/3/17.
  */
 
-public class Robot7604
+public class MiniRobot7604 extends Robot7604
 {
-    DcMotor FrontLeft;
-    DcMotor FrontRight;
-    DcMotor BackLeft;
-    DcMotor BackRight;
-    DcMotor Lift;// High torque motor
-    DcMotor Slide;
-
-    protected Robot7604()
-    {
-
-    }
-
-    public Robot7604(OpMode op)
+    public MiniRobot7604(OpMode op)
     {
         this(op.hardwareMap);
     }
 
-    public Robot7604(HardwareMap hardwareMap)
+    public MiniRobot7604(HardwareMap hardwareMap)
     {
+        super();
+
         FrontLeft = hardwareMap.dcMotor.get("FrontLeft");
         FrontRight = hardwareMap.dcMotor.get("FrontRight");
         BackLeft = hardwareMap.dcMotor.get("BackLeft");
         BackRight = hardwareMap.dcMotor.get("BackRight");
 
-        Lift = hardwareMap.dcMotor.get("Lift");
-
-        Slide = hardwareMap.dcMotor.get("Slide");
-
-        //FrontLeft.setDirection(REVERSE);
         FrontRight.setDirection(REVERSE);
-        //BackLeft.setDirection(REVERSE);
         BackRight.setDirection(REVERSE);
     }
 
@@ -59,7 +43,5 @@ public class Robot7604
         FrontRight.setPower(0);
         BackLeft.setPower(0);
         BackRight.setPower(0);
-        Lift.setPower(0);
-        Slide.setPower(0);
     }
 }

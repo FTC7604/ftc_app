@@ -14,8 +14,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class PIDAngleControl implements SensorEventListener
 {
-    private static final float mult = .1f;
-    private static final float kP = 2, kI = 2f, kD = 0.5f;
+    private static final float mult = .035f;
+    private static final float kP = 2.0f, kI = 1.2f, kD = 0.3f;
     private float error, integral, derivative;
     private SensorManager sensorManager;
     private Sensor sensor;
@@ -56,9 +56,9 @@ public class PIDAngleControl implements SensorEventListener
     {
         float value = (mult * kP * error) + (mult * kI * integral) + (mult * kD * derivative);
 
-        telemetry.addData("error", error);
-        telemetry.addData("integral", integral);
-        telemetry.addData("differential", derivative);
+        telemetry.addData("error", kP * error);
+        telemetry.addData("integral", kI * integral);
+        telemetry.addData("differential", kD * derivative);
         telemetry.addData("value", value);
         telemetry.update();
 
