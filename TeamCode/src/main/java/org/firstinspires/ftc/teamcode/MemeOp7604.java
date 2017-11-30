@@ -61,7 +61,6 @@ public class MemeOp7604 extends OpMode{
         LeftGripBottom = hardwareMap.servo.get("LeftGripBottom");
         RightGripBottom = hardwareMap.servo.get("RightGripBottom");
 
-        FrontLeft.setDirection(REVERSE);
         FrontRight.setDirection(REVERSE);
         BackLeft.setDirection(REVERSE);
         BackRight.setDirection(REVERSE);

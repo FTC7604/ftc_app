@@ -34,6 +34,13 @@ public class AutoRedLeft extends LinearOpMode {
         sleep(500);
         bot.SvingerDvinger.setPower(0);
         sleep(500);
+        bot.ColorStick.setPower(0.3);
+        sleep(1000);
+        bot.ColorStick.setPower(0);
+        sleep(1000);
+        bot.ColorStick.setPower(-0.3);
+        sleep(1000);
+        bot.ColorStick.setPower(0);
         bot.drive(-0.2f,1.571f,0);
         sleep(400);
         bot.stop();
