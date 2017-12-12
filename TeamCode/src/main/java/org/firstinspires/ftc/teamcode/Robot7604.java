@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.LightSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
@@ -13,6 +14,10 @@ import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
 
 public class Robot7604
 {
+
+    LightSensor LSensor;
+    LightSensor CSensor;
+
     DcMotor FrontLeft;
     DcMotor FrontRight;
     DcMotor BackLeft;
@@ -20,8 +25,8 @@ public class Robot7604
     DcMotor Lift;//High torque motor
     DcMotor Slide;
     DcMotor SvingerDvinger;
-    DcMotor ColorStick;
 
+    Servo ColorStick;
     Servo LeftHook, RightHook;
     Servo Twister;
     Servo Upercut;
@@ -37,13 +42,16 @@ public class Robot7604
     public Robot7604(HardwareMap hardwareMap)
     {
 
+        LSensor = hardwareMap.get(LightSensor.class, "LightSensor");
+        CSensor = hardwareMap.get(LightSensor.class, "ColorSensor");
+
         FrontLeft = hardwareMap.dcMotor.get("FrontLeft");
         FrontRight = hardwareMap.dcMotor.get("FrontRight");
         BackLeft = hardwareMap.dcMotor.get("BackLeft");
         BackRight = hardwareMap.dcMotor.get("BackRight");
         Slide = hardwareMap.dcMotor.get("Slide");
         SvingerDvinger = hardwareMap.dcMotor.get("SvingerDvinger");
-        ColorStick = hardwareMap.dcMotor.get("ColorStick");
+        ColorStick = hardwareMap.servo.get("ColorStick");
         Lift = hardwareMap.dcMotor.get("Lift");
 
         LeftHook = hardwareMap.servo.get("LeftHook");
@@ -55,8 +63,8 @@ public class Robot7604
         LeftGripBottom = hardwareMap.servo.get("LeftGripBottom");
         RightGripBottom = hardwareMap.servo.get("RightGripBottom");
 
-        //FrontLeft.setDirection(REVERSE);
-        FrontRight.setDirection(REVERSE);
+        FrontLeft.setDirection(REVERSE);
+        //FrontRight.setDirection(REVERSE);
         //BackLeft.setDirection(REVERSE);
         BackRight.setDirection(REVERSE);
     }

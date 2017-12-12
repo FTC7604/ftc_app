@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.LightSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -11,8 +12,6 @@ import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
 
 @TeleOp(name = "A Quality Pull Request", group = "7604")
 public class MemeOp7604 extends OpMode{
-
-
 
     DcMotor FrontLeft;
     DcMotor FrontRight;
@@ -38,11 +37,12 @@ public class MemeOp7604 extends OpMode{
     boolean gripPressed = false;
     boolean uperPressed = false;
 
-    double gripValue = 0;
+    double gripValue = 0.5;
 
 
     @Override
     public void init() {
+
         FrontLeft = hardwareMap.dcMotor.get("FrontLeft");
         FrontRight = hardwareMap.dcMotor.get("FrontRight");
         BackLeft = hardwareMap.dcMotor.get("BackLeft");
@@ -61,10 +61,10 @@ public class MemeOp7604 extends OpMode{
         LeftGripBottom = hardwareMap.servo.get("LeftGripBottom");
         RightGripBottom = hardwareMap.servo.get("RightGripBottom");
 
-        FrontRight.setDirection(REVERSE);
         BackLeft.setDirection(REVERSE);
         BackRight.setDirection(REVERSE);
-
+        //FrontLeft.setDirection(REVERSE);
+        BackLeft.setDirection(REVERSE);
         Telemetry telemetry = this.telemetry;
     }
 
@@ -84,7 +84,7 @@ public class MemeOp7604 extends OpMode{
         BackLeft.setPower((power / powerLevels) * (gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
         BackRight.setPower((power / powerLevels) * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
 
-        liftPower = ((gamepad1.dpad_up ? 1 : 0) + (gamepad1.dpad_down ? -1 : 0));
+        liftPower = ((gamepad1.dpad_up ? -1 : 0) + (gamepad1.dpad_down ? 1 : 0));
 
         Lift.setPower(liftPower);
 
@@ -113,17 +113,18 @@ public class MemeOp7604 extends OpMode{
 
         SvingerDvinger.setPower(gamepad1.y ? 1 : gamepad1.x ? -1 : 0);
 
-        if(gamepad1.left_bumper){
-            gripValue = 0.5;
+        if(gamepad1.left_bumper && !gripPressed){
+            gripValue += (gripValue < 0.5 ? 0.25 : 0);
+            gripPressed = true;
         }
-        else if(gamepad1.right_bumper){
-            gripValue = 0;
+        else if(gamepad1.right_bumper && !gripPressed){
+            gripValue -= (gripValue > 0 ? 0.25 : 0);
+            gripPressed = true;
         }
-        /*
         else{
-            gripValue = 0;
+            gripPressed = false;
         }
-        */
+
         LeftGrip.setPosition(0.5 + gripValue);
         LeftGripBottom.setPosition(0.5 + gripValue);
         RightGrip.setPosition(0.5 - gripValue);
