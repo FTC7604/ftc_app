@@ -65,7 +65,7 @@ public class Robot7604
 
         FrontLeft.setDirection(REVERSE);
         //FrontRight.setDirection(REVERSE);
-        //BackLeft.setDirection(REVERSE);
+        BackLeft.setDirection(REVERSE);
         BackRight.setDirection(REVERSE);
     }
 
