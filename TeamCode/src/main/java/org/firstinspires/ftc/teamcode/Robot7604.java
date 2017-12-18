@@ -65,8 +65,8 @@ public class Robot7604
 
         FrontLeft.setDirection(REVERSE);
         //FrontRight.setDirection(REVERSE);
-        //BackLeft.setDirection(REVERSE);
-        BackRight.setDirection(REVERSE);
+        BackLeft.setDirection(REVERSE);
+        //BackRight.setDirection(REVERSE);
     }
 
     public void drive(double power, double angle, double rotation){
