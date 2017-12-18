@@ -61,11 +61,8 @@ public class MemeOp7604 extends OpMode{
         LeftGripBottom = hardwareMap.servo.get("LeftGripBottom");
         RightGripBottom = hardwareMap.servo.get("RightGripBottom");
 
-        BackLeft.setDirection(REVERSE);
+        FrontRight.setDirection(REVERSE);
         BackRight.setDirection(REVERSE);
-        //FrontLeft.setDirection(REVERSE);
-        BackLeft.setDirection(REVERSE);
-        Telemetry telemetry = this.telemetry;
     }
 
     @Override
@@ -79,16 +76,23 @@ public class MemeOp7604 extends OpMode{
     @Override
     public void loop() {
 
-        FrontRight.setPower((power / powerLevels) * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
-        FrontLeft.setPower((power / powerLevels) * (gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
-        BackLeft.setPower((power / powerLevels) * (gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
-        BackRight.setPower((power / powerLevels) * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
+        double powerMult = power / powerLevels;
+        double leftPower = powerMult * gamepad1.left_stick_y;
+        double rightPower = powerMult * gamepad1.right_stick_y;
+
+        FrontRight.setPower(rightPower);
+        FrontLeft.setPower(leftPower);
+        BackLeft.setPower(leftPower);
+        BackRight.setPower(rightPower);
+
+        telemetry.addData("rsy", "%f %f", gamepad1.right_stick_y, rightPower);
+        telemetry.addData("lsy", "%f %f", gamepad1.left_stick_y, leftPower);
 
         liftPower = ((gamepad1.dpad_up ? -1 : 0) + (gamepad1.dpad_down ? 1 : 0));
 
         Lift.setPower(liftPower);
 
-        if(gamepad1.x)
+        /*if(gamepad1.x)
         {
             if(power == powerLevels)
             {
@@ -109,7 +113,7 @@ public class MemeOp7604 extends OpMode{
             {
                 power--;
             }
-        }
+        }*/
 
         SvingerDvinger.setPower(gamepad1.y ? 1 : gamepad1.x ? -1 : 0);
 

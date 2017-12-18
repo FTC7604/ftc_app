@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 /**
  * Created by ssuri on 10/3/17.
+ *
  */
 
 public class MiniRobot7604 extends Robot7604
