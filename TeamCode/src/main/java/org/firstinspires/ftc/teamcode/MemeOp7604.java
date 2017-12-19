@@ -20,6 +20,7 @@ public class MemeOp7604 extends OpMode{
     DcMotor Lift;//High torque motor
     DcMotor Slide;
     DcMotor SvingerDvinger;
+    DcMotor Rudder;
 
     Servo LeftHook, RightHook;
     Servo Twister;
@@ -49,6 +50,7 @@ public class MemeOp7604 extends OpMode{
         BackRight = hardwareMap.dcMotor.get("BackRight");
         Slide = hardwareMap.dcMotor.get("Slide");
         SvingerDvinger = hardwareMap.dcMotor.get("SvingerDvinger");
+        Rudder = hardwareMap.dcMotor.get("Rudder");
 
         Lift = hardwareMap.dcMotor.get("Lift");
 
@@ -80,10 +82,13 @@ public class MemeOp7604 extends OpMode{
         double leftPower = powerMult * gamepad1.left_stick_y;
         double rightPower = powerMult * gamepad1.right_stick_y;
 
+        double rudderPower = powerMult * gamepad1.left_stick_x;
+
         FrontRight.setPower(rightPower);
         FrontLeft.setPower(leftPower);
         BackLeft.setPower(leftPower);
         BackRight.setPower(rightPower);
+        Rudder.setPower(rudderPower);
 
         telemetry.addData("rsy", "%f %f", gamepad1.right_stick_y, rightPower);
         telemetry.addData("lsy", "%f %f", gamepad1.left_stick_y, leftPower);

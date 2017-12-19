@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "25.0.3"
+    buildToolsVersion '27.0.2'
 
 
     defaultConfig {
@@ -28,8 +28,8 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile (name:'RobotCore-release', ext: 'aar')
-    compile (name:'Hardware-release', ext: 'aar')
-    compile (name:'Inspection-release', ext: 'aar')
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile(name: 'RobotCore-release', ext: 'aar')
+    compile(name: 'Hardware-release', ext: 'aar')
+    compile(name: 'Inspection-release', ext: 'aar')
 }

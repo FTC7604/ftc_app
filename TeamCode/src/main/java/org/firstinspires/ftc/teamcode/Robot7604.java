@@ -25,6 +25,7 @@ public class Robot7604
     DcMotor Lift;//High torque motor
     DcMotor Slide;
     DcMotor SvingerDvinger;
+    DcMotor Rudder;
 
     Servo ColorStick;
     Servo LeftHook, RightHook;
@@ -50,9 +51,8 @@ public class Robot7604
         BackLeft = hardwareMap.dcMotor.get("BackLeft");
         BackRight = hardwareMap.dcMotor.get("BackRight");
         Slide = hardwareMap.dcMotor.get("Slide");
-        SvingerDvinger = hardwareMap.dcMotor.get("SvingerDvinger");
-        ColorStick = hardwareMap.servo.get("ColorStick");
         Lift = hardwareMap.dcMotor.get("Lift");
+        Rudder = hardwareMap.dcMotor.get("Rudder");
 
         LeftHook = hardwareMap.servo.get("LeftHook");
         RightHook = hardwareMap.servo.get("RightHook");
@@ -62,6 +62,7 @@ public class Robot7604
         RightGrip = hardwareMap.servo.get("RightGrip");
         LeftGripBottom = hardwareMap.servo.get("LeftGripBottom");
         RightGripBottom = hardwareMap.servo.get("RightGripBottom");
+        SvingerDvinger = hardwareMap.dcMotor.get("SvingerDvinger");
 
         FrontLeft.setDirection(REVERSE);
         //FrontRight.setDirection(REVERSE);
