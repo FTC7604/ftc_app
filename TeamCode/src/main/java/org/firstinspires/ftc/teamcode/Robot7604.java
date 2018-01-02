@@ -63,6 +63,7 @@ public class Robot7604
         LeftGripBottom = hardwareMap.servo.get("LeftGripBottom");
         RightGripBottom = hardwareMap.servo.get("RightGripBottom");
         SvingerDvinger = hardwareMap.dcMotor.get("SvingerDvinger");
+        ColorStick = hardwareMap.servo.get("ColorStick");
 
         FrontLeft.setDirection(REVERSE);
         //FrontRight.setDirection(REVERSE);
@@ -70,11 +71,11 @@ public class Robot7604
         BackRight.setDirection(REVERSE);
     }
 
-    public void drive(double power, double angle, double rotation){
-        FrontRight.setPower(power * (Math.sin(angle) + Math.cos(angle)) - rotation);
-        FrontLeft.setPower(power * (Math.sin(angle) + Math.cos(angle)) + rotation);
-        BackLeft.setPower(power * (Math.sin(angle) - Math.cos(angle)) + rotation);
-        BackRight.setPower(power * (Math.sin(angle) - Math.cos(angle)) - rotation);
+    public void drive(double power, double rotation){
+        FrontRight.setPower(power - rotation);
+        FrontLeft.setPower(power + rotation);
+        BackLeft.setPower(power + rotation);
+        BackRight.setPower(power - rotation);
     }
 
     public void stop()

@@ -22,6 +22,7 @@ public class MemeOp7604 extends OpMode{
     DcMotor SvingerDvinger;
     DcMotor Rudder;
 
+    Servo ColorStick;
     Servo LeftHook, RightHook;
     Servo Twister;
     Servo Upercut;
@@ -54,6 +55,7 @@ public class MemeOp7604 extends OpMode{
 
         Lift = hardwareMap.dcMotor.get("Lift");
 
+        ColorStick = hardwareMap.servo.get("ColorStick");
         LeftHook = hardwareMap.servo.get("LeftHook");
         RightHook = hardwareMap.servo.get("RightHook");
         Twister = hardwareMap.servo.get("Twister");
@@ -122,13 +124,17 @@ public class MemeOp7604 extends OpMode{
 
         SvingerDvinger.setPower(gamepad1.y ? 1 : gamepad1.x ? -1 : 0);
 
-        if(gamepad1.left_bumper && !gripPressed){
-            gripValue += (gripValue < 0.5 ? 0.25 : 0);
-            gripPressed = true;
+        if(gamepad1.left_bumper){
+            if(!gripPressed) {
+                gripValue += (gripValue < 0.5 ? 0.25 : 0);
+                gripPressed = true;
+            }
         }
-        else if(gamepad1.right_bumper && !gripPressed){
-            gripValue -= (gripValue > 0 ? 0.25 : 0);
-            gripPressed = true;
+        else if(gamepad1.right_bumper){
+            if(!gripPressed) {
+                gripValue -= (gripValue > 0 ? 0.25 : 0);
+                gripPressed = true;
+            }
         }
         else{
             gripPressed = false;
@@ -139,7 +145,12 @@ public class MemeOp7604 extends OpMode{
         RightGrip.setPosition(0.5 - gripValue);
         RightGripBottom.setPosition(0.5 - gripValue);
 
-
+        if(gamepad1.dpad_left){
+            ColorStick.setPosition(0.5);
+        }
+        else if(gamepad1.dpad_right){
+            ColorStick.setPosition(0);
+        }
 
 
         // --------------------------- Second controller

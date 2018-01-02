@@ -27,7 +27,7 @@ public class DriveStraight extends OpMode
     @Override
     public void loop()
     {
-        robot.drive(.2f, (Math.PI / 2) - 0.32f, 0);
+        robot.drive(.2f, 0);
     }
 
     @Override
