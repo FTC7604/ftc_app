@@ -81,19 +81,24 @@ public class MemeOp7604 extends OpMode{
     public void loop() {
 
         double powerMult = power / powerLevels;
-        double leftPower = powerMult * gamepad1.left_stick_y;
-        double rightPower = powerMult * gamepad1.right_stick_y;
+        double leftPower1 = powerMult * gamepad2.left_stick_y;
+        double rightPower1 = powerMult * gamepad2.right_stick_y;
+        double rightPower2 = -1 * powerMult * gamepad1.left_stick_y;
+        double leftPower2 =  -1 * powerMult * gamepad1.right_stick_y;
 
-        double rudderPower = powerMult * gamepad1.left_stick_x;
+        //double rudderPower = powerMult * gamepad1.left_stick_x;
 
-        FrontRight.setPower(rightPower);
-        FrontLeft.setPower(leftPower);
-        BackLeft.setPower(leftPower);
-        BackRight.setPower(rightPower);
-        Rudder.setPower(rudderPower);
+        FrontRight.setPower(rightPower1 + rightPower2);
+        FrontLeft.setPower(leftPower1 + leftPower2);
+        BackLeft.setPower(leftPower1 + leftPower2);
+        BackRight.setPower(rightPower1 + rightPower2);
+        //Rudder.setPower(rudderPower);
 
-        telemetry.addData("rsy", "%f %f", gamepad1.right_stick_y, rightPower);
-        telemetry.addData("lsy", "%f %f", gamepad1.left_stick_y, leftPower);
+        telemetry.addData("rsy1", "%f %f", gamepad1.right_stick_y, rightPower1);
+        telemetry.addData("lsy1", "%f %f", gamepad1.left_stick_y, leftPower1);
+
+        telemetry.addData("rsy1", "%f %f", -gamepad1.left_stick_y, rightPower1);
+        telemetry.addData("lsy1", "%f %f", -gamepad1.right_stick_y, leftPower1);
 
         liftPower = ((gamepad1.dpad_up ? -1 : 0) + (gamepad1.dpad_down ? 1 : 0));
 
@@ -174,13 +179,13 @@ public class MemeOp7604 extends OpMode{
             RightHook.setPosition(gamepad2.right_bumper ? 0 : 1);
         }
 
-        if(gamepad2.x){
+        if(gamepad2.y){
             if(!uperPressed) {
                 uperValue += (uperValue >= 1 ? 0 : 0.5);
                 uperPressed = true;
             }
         }
-        else if(gamepad2.y){
+        else if(gamepad2.x){
             if(!uperPressed){
                 uperValue -= (uperValue <= 0 ? 0 : 0.5);
                 uperPressed = true;

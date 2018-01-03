@@ -119,7 +119,7 @@ public class AutoRedLeft extends LinearOpMode {
 
         bot.stop();
         sleep(1000);
-        bot.drive(0,-0.5f);
+        bot.drive(0,-0.2f);
         sleep(900);
         bot.stop();
         pid.stopPID();

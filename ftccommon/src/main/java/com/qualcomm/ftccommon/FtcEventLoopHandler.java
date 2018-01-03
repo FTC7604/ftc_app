@@ -324,7 +324,7 @@ public class FtcEventLoopHandler implements BatteryChecker.BatteryWatcher {
 
   public void restartRobot() {
     RobotLog.d("restarting robot...");
-    robotControllerBatteryChecker.endBatteryMonitoring();
+    //robotControllerBatteryChecker.endBatteryMonitoring();
     callback.restartRobot();
   }
 
