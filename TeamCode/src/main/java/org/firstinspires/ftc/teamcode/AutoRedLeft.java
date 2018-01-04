@@ -50,7 +50,14 @@ public class AutoRedLeft extends LinearOpMode {
 
 		relicTrackables.activate();
 
-		RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+		timeInit = System.currentTimeMillis();
+
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+
+		while(System.currentTimeMillis() - timeInit < 1000 && opModeIsActive()) {
+            vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        }
+
 
 		telemetry.addData("VuMark", vuMark);
         telemetry.update();
@@ -112,7 +119,7 @@ public class AutoRedLeft extends LinearOpMode {
 
         bot.stop();
         sleep(1000);
-        bot.drive(0,-0.5f);
+        bot.drive(0,-0.2f);
         sleep(900);
         bot.stop();
         pid.stopPID();
