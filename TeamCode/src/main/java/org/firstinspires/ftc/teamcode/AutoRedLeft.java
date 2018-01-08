@@ -39,7 +39,7 @@ public class AutoRedLeft extends LinearOpMode {
 
         parameters.vuforiaLicenseKey = "ASv2MNj/////AAAAGQukwPKRd0YcsSlpoJYzs9EdjNGpnGv0mY+oWYr923xV6ZP+Tm9A7ZjZvdw7KY3iqJ/2AXpNLeHZLylMumJd46ZYL4zpkdjPY6OwGwUmQBrgo6MXWgIM6bKgp/0M1SJnb8yYpFjzTAqAXtXqotY5KPiLkelgBeCuPYc+NUAlf6vSxjEr7+Zezid1O2zV3dRV/FlaBJN9MQsgWOvPQfsTiKqgpEr2b4pLG8PMqL/HU3RvuEexsWSv5eN6mWtx8Vt7m+GSBC6xo9vxR+gaTLsi19RAXTPCq4UhoQvrFYIORotVeVa5zIhZXlpMc09NZT25e6DcOPTv2eloL55O2/FK81AGay8e4urLNQ5wF3vknehR";
 
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         VuforiaLocalizer vuforia = ClassFactory
                 .createVuforiaLocalizer(parameters);
 
@@ -54,7 +54,7 @@ public class AutoRedLeft extends LinearOpMode {
 
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
 
-		while(System.currentTimeMillis() - timeInit < 1000 && opModeIsActive()) {
+		while(System.currentTimeMillis() - timeInit < 4000 && opModeIsActive()) {
             vuMark = RelicRecoveryVuMark.from(relicTemplate);
         }
 
@@ -119,8 +119,8 @@ public class AutoRedLeft extends LinearOpMode {
 
         bot.stop();
         sleep(1000);
-        bot.drive(0,-0.2f);
-        sleep(900);
+        bot.drive(0,-0.5f);
+        sleep(1500);
         bot.stop();
         pid.stopPID();
         /*
