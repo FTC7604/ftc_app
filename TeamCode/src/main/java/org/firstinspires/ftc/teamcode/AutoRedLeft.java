@@ -32,6 +32,7 @@ public class AutoRedLeft extends LinearOpMode {
         waitForStart();
 
 
+
         int cameraMonitorViewId = hardwareMap.appContext.getResources()
                 .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
@@ -44,25 +45,29 @@ public class AutoRedLeft extends LinearOpMode {
                 .createVuforiaLocalizer(parameters);
 
 
-		VuforiaTrackables relicTrackables = vuforia.loadTrackablesFromAsset("RelicVuMark");
-		VuforiaTrackable relicTemplate = relicTrackables.get(0);
-		relicTemplate.setName("relicVuMarkTemplate");
+        VuforiaTrackables relicTrackables = vuforia.loadTrackablesFromAsset("RelicVuMark");
+        VuforiaTrackable relicTemplate = relicTrackables.get(0);
+        relicTemplate.setName("relicVuMarkTemplate");
 
-		relicTrackables.activate();
+        relicTrackables.activate();
 
-		timeInit = System.currentTimeMillis();
+        timeInit = System.currentTimeMillis();
 
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
 
-		while(System.currentTimeMillis() - timeInit < 4000 && opModeIsActive()) {
+        while(System.currentTimeMillis() - timeInit < 4000 && opModeIsActive()) {
             vuMark = RelicRecoveryVuMark.from(relicTemplate);
         }
 
 
-		telemetry.addData("VuMark", vuMark);
+        telemetry.addData("VuMark", vuMark);
         telemetry.update();
+        sleep(1000);
 
 
+
+
+        /*
         bot.grip(true);
 
         sleep(500);
@@ -72,9 +77,9 @@ public class AutoRedLeft extends LinearOpMode {
         sleep(500);
         bot.SvingerDvinger.setPower(0);
         sleep(500);
+        */
 
-        /*
-        bot.ColorStick.setPosition(0.5);
+        bot.ColorStick.setPosition(0.6);
         bot.CSensor.enableLed(true);
 
         sleep(500);
@@ -87,33 +92,55 @@ public class AutoRedLeft extends LinearOpMode {
             telemetry.update();
         }
 
-        if(bot.CSensor.getRawLightDetected() > 1.25){
-            //bot.drive(0.1,1.571f,0);
+        if(bot.CSensor.getRawLightDetected() < 1.88){
+            bot.drive(0.2,0);
             telemetry.addData("Choice", "Forwards");
+            telemetry.update();
+            sleep(600);
+            bot.stop();
+
+
+            bot.CSensor.enableLed(false);
+            bot.ColorStick.setPosition(0);
+            sleep(500);
+
+            sleep(500);
+            bot.drive(-0.2,0);
+            sleep(2000);
+            bot.stop();
         }
         else{
-            //bot.drive(-0.1,1.571f,0);
+            bot.drive(-0.2,0);
             telemetry.addData("Choice", "Backwards");
+            telemetry.update();
+            sleep(1400);
+            bot.stop();
+
+
+            bot.CSensor.enableLed(false);
+            bot.ColorStick.setPosition(0);
+            sleep(500);
         }
-        telemetry.update();
-        sleep(600);
-        bot.stop();
 
-        bot.CSensor.enableLed(false);
-        bot.ColorStick.setPosition(0);
-        sleep(500);
-        */
 
+
+
+
+
+
+
+
+        /*
         bot.drive(-0.2f, 0);
         sleep(400);
         bot.stop();
         sleep(500);
-
+        */
 
         //pid.startPID();
 
         timeInit = System.currentTimeMillis();
-        while(System.currentTimeMillis() - timeInit < 4500 && opModeIsActive()){
+        while(System.currentTimeMillis() - timeInit < 4000 && opModeIsActive()){
             bot.drive(-0.2f, 0);
         }
 
@@ -122,7 +149,7 @@ public class AutoRedLeft extends LinearOpMode {
         bot.drive(0,-0.5f);
         sleep(1500);
         bot.stop();
-        pid.stopPID();
+        //pid.stopPID();
         /*
             Shift over laterally based on pictogram
 
