@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.LightSensor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -140,9 +139,14 @@ public class AutoRedLeft extends LinearOpMode {
         //pid.startPID();
 
         timeInit = System.currentTimeMillis();
-        while(System.currentTimeMillis() - timeInit < 4000 && opModeIsActive()){
+        while(System.currentTimeMillis() - timeInit < 1000 && opModeIsActive()){
             bot.drive(-0.2f, 0);
         }
+        while(bot.LSensor.getRawLightDetected() < 1.325 && opModeIsActive()){
+            bot.drive(-0.2f, 0);
+        }
+
+
 
         bot.stop();
         sleep(1000);
