@@ -32,6 +32,9 @@ public class MemeOp7604 extends OpMode{
     LightSensor LSensor;
     LightSensor CSensor;
 
+    DcMotor Led1; //Led stream
+    DcMotor Led2; //Led stream
+
     double power = 1;
     double powerLevels = 1;
     int liftPower = 0;
@@ -68,6 +71,9 @@ public class MemeOp7604 extends OpMode{
         LeftGripBottom = hardwareMap.servo.get("LeftGripBottom");
         RightGripBottom = hardwareMap.servo.get("RightGripBottom");
 
+        Led1 = hardwareMap.dcMotor.get("Led1");
+        Led2 = hardwareMap.dcMotor.get("Led2");
+
         FrontRight.setDirection(REVERSE);
         BackRight.setDirection(REVERSE);
 
@@ -91,6 +97,10 @@ public class MemeOp7604 extends OpMode{
 
         telemetry.addData("LSensor", LSensor.getRawLightDetected());
         telemetry.addData("CSensor", CSensor.getRawLightDetected());
+        telemetry.addData("Encoder 1", Led1.getCurrentPosition());
+        telemetry.addData("Encoder 2", Led2.getCurrentPosition());
+        telemetry.addData("Encoder 3", Lift.getCurrentPosition());
+        telemetry.addData("Encoder 4", Slide.getCurrentPosition());
 
 
         double powerMult = power / powerLevels;

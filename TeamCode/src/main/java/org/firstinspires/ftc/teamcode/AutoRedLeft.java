@@ -18,6 +18,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 @Autonomous(name = "AutoRedLeft", group = "7604")
 public class AutoRedLeft extends LinearOpMode {
+    String position = "None";
+
+    public void AutoRedLeft(String position){
+        position = this.position;
+    }
 
     @Override
     public void runOpMode () {
@@ -92,7 +97,7 @@ public class AutoRedLeft extends LinearOpMode {
             telemetry.update();
         }
 
-        if(bot.CSensor.getRawLightDetected() < 1.88){
+        if(bot.CSensor.getRawLightDetected() < 1.88 ^ (position == "blueleft" || position == "blueright")){
             bot.drive(0.2,0);
             telemetry.addData("Choice", "Forwards");
             telemetry.update();
