@@ -30,6 +30,7 @@ public class MemeOp7604 extends OpMode{
     Servo LeftGripBottom, RightGripBottom;
 
     LightSensor LSensor;
+    LightSensor CSensor;
 
     double power = 1;
     double powerLevels = 1;
@@ -71,6 +72,7 @@ public class MemeOp7604 extends OpMode{
         BackRight.setDirection(REVERSE);
 
         LSensor = hardwareMap.get(LightSensor.class, "LightSensor");
+        CSensor = hardwareMap.get(LightSensor.class, "ColorSensor");
     }
 
     @Override
@@ -85,8 +87,11 @@ public class MemeOp7604 extends OpMode{
     public void loop() {
 
         LSensor.enableLed(true);
+        CSensor.enableLed(true);
 
         telemetry.addData("LSensor", LSensor.getRawLightDetected());
+        telemetry.addData("CSensor", CSensor.getRawLightDetected());
+
 
         double powerMult = power / powerLevels;
         double leftPower1 = powerMult * gamepad2.left_stick_y;

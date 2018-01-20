@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  */
 
 @Autonomous(name = "WheelConfig", group = "7604")
-public class WheelConfig extends LinearOpMode {
+public class     WheelConfig extends LinearOpMode {
 
     @Override
     public void runOpMode () {

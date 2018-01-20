@@ -23,10 +23,11 @@ public class AutoRedLeft extends LinearOpMode {
     public void runOpMode () {
 
 
+
         long timeInit;
         Robot7604 bot = new Robot7604(this);
 
-        PIDAngleControl pid = new PIDAngleControl(this);
+        //PIDAngleControl pid = new PIDAngleControl(this);
 
         waitForStart();
 
@@ -54,19 +55,19 @@ public class AutoRedLeft extends LinearOpMode {
 
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
 
-        while(System.currentTimeMillis() - timeInit < 4000 && opModeIsActive()) {
+        while(System.currentTimeMillis() - timeInit < 2000 && opModeIsActive()) {
             vuMark = RelicRecoveryVuMark.from(relicTemplate);
         }
 
 
         telemetry.addData("VuMark", vuMark);
         telemetry.update();
-        sleep(1000);
+        sleep(500);
 
 
 
 
-        /*
+
         bot.grip(true);
 
         sleep(500);
@@ -76,7 +77,7 @@ public class AutoRedLeft extends LinearOpMode {
         sleep(500);
         bot.SvingerDvinger.setPower(0);
         sleep(500);
-        */
+
 
         bot.ColorStick.setPosition(0.6);
         bot.CSensor.enableLed(true);
@@ -85,7 +86,7 @@ public class AutoRedLeft extends LinearOpMode {
 
         timeInit = System.currentTimeMillis();
 
-        while(System.currentTimeMillis() - timeInit < 5000 && opModeIsActive()) {
+        while(System.currentTimeMillis() - timeInit < 1000 && opModeIsActive()) {
             telemetry.addData("RawCS", bot.CSensor.getRawLightDetected());
 
             telemetry.update();
@@ -136,38 +137,49 @@ public class AutoRedLeft extends LinearOpMode {
         sleep(500);
         */
 
-        //pid.startPID();
 
+        bot.LSensor.enableLed(true);
         timeInit = System.currentTimeMillis();
-        while(System.currentTimeMillis() - timeInit < 1000 && opModeIsActive()){
-            bot.drive(-0.2f, 0);
+        while(System.currentTimeMillis() - timeInit < 300 && opModeIsActive()){
+            bot.drive(-0.3f, 0);
         }
         while(bot.LSensor.getRawLightDetected() < 1.325 && opModeIsActive()){
-            bot.drive(-0.2f, 0);
+            bot.drive(-0.3f, 0);
+            telemetry.addData("LValue", bot.LSensor.getRawLightDetected());
+            telemetry.update();
         }
+        bot.LSensor.enableLed(false);
 
 
 
         bot.stop();
         sleep(1000);
-        bot.drive(0,-0.5f);
-        sleep(1500);
-        bot.stop();
-        //pid.stopPID();
-        /*
-            Shift over laterally based on pictogram
 
-        pid.startPID();
-        timeInit = System.currentTimeMillis();
-        while(System.currentTimeMillis() - timeInit < 2000 && opModeIsActive()){
-            bot.drive(0.4f,1.571f, 0.5 * pid.getValue());
+        long rot = 0;
+
+        switch(vuMark){
+            case LEFT:
+                rot = 2000;
+                break;
+            case CENTER:
+                rot = 1500;
+                break;
+            case RIGHT:
+                rot = 1000;
+                break;
         }
+
+
+        bot.drive(0,-0.5f);
+        sleep(rot);
+        bot.stop();
+        bot.drive(0.4f,0);
+        sleep(600);
         bot.stop();
         bot.grip(false);
-        bot.drive(-0.2f,1.571f,0);
+        sleep(500);
+        bot.drive(-0.2f,0);
         bot.stop();
 
-        pid.stopPID();
-        */
     }
 }

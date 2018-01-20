@@ -29,5 +29,9 @@ public class PizzaBot extends OpMode
 
         rightDrive.setPower(rightPower);
         leftDrive.setPower(leftPower);
+
+
+        telemetry.addData("Encoder Value", rightDrive.getCurrentPosition());
+        telemetry.update();
     }
 }
