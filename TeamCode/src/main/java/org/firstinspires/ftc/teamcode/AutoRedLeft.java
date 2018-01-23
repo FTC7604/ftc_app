@@ -18,7 +18,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 @Autonomous(name = "AutoRedLeft", group = "7604")
 public class AutoRedLeft extends LinearOpMode {
-    String position = "None";
+    String position = "redleft";
 
     public void AutoRedLeft(String position){
         position = this.position;
@@ -30,6 +30,22 @@ public class AutoRedLeft extends LinearOpMode {
 
 
         long timeInit;
+        int direction = 0;
+        switch(position){
+            case "redleft":
+                direction = -1;
+                break;
+            case "redright":
+                direction = -1;
+                break;
+            case "blueleft":
+                direction = 1;
+                break;
+            case "blueright":
+                direction = 1;
+                break;
+        }
+
         Robot7604 bot = new Robot7604(this);
 
         //PIDAngleControl pid = new PIDAngleControl(this);
@@ -84,7 +100,7 @@ public class AutoRedLeft extends LinearOpMode {
         sleep(500);
 
 
-        bot.ColorStick.setPosition(0.6);
+        bot.ColorStick.setPosition(0.75);
         bot.CSensor.enableLed(true);
 
         sleep(500);
@@ -97,7 +113,7 @@ public class AutoRedLeft extends LinearOpMode {
             telemetry.update();
         }
 
-        if(bot.CSensor.getRawLightDetected() < 1.88 ^ (position == "blueleft" || position == "blueright")){
+        if(bot.CSensor.getRawLightDetected() < 1.75 ^ (direction == 1)){
             bot.drive(0.2,0);
             telemetry.addData("Choice", "Forwards");
             telemetry.update();
@@ -109,22 +125,30 @@ public class AutoRedLeft extends LinearOpMode {
             bot.ColorStick.setPosition(0);
             sleep(500);
 
-            sleep(500);
-            bot.drive(-0.2,0);
-            sleep(2000);
-            bot.stop();
+            if(direction == -1) {
+                bot.drive(-0.2, 0);
+                sleep(2000);
+                bot.stop();
+            }
         }
         else{
             bot.drive(-0.2,0);
             telemetry.addData("Choice", "Backwards");
             telemetry.update();
-            sleep(1400);
+            sleep(600);
             bot.stop();
 
 
             bot.CSensor.enableLed(false);
             bot.ColorStick.setPosition(0);
             sleep(500);
+
+
+            if(direction == 1) {
+                bot.drive(0.2, 0);
+                sleep(3000);
+                bot.stop();
+            }
         }
 
 
@@ -141,18 +165,24 @@ public class AutoRedLeft extends LinearOpMode {
         bot.stop();
         sleep(500);
         */
+        double redGray = 1.325;
+        double blueGray = 1.05;
 
-
+        double LThreshold = (redGray + blueGray) / 2 + (direction * ((blueGray - redGray)/2));
         bot.LSensor.enableLed(true);
         timeInit = System.currentTimeMillis();
-        while(System.currentTimeMillis() - timeInit < 300 && opModeIsActive()){
-            bot.drive(-0.3f, 0);
+        while(System.currentTimeMillis() - timeInit < 1000 && opModeIsActive()){
+            bot.drive(direction * 0.3f, 0);
         }
-        while(bot.LSensor.getRawLightDetected() < 1.325 && opModeIsActive()){
-            bot.drive(-0.3f, 0);
+        while(bot.LSensor.getRawLightDetected() < LThreshold && opModeIsActive()){
+            bot.drive(direction * 0.3f, 0);
             telemetry.addData("LValue", bot.LSensor.getRawLightDetected());
             telemetry.update();
         }
+        bot.stop();
+        sleep(500);
+
+
         bot.LSensor.enableLed(false);
 
 
@@ -164,18 +194,18 @@ public class AutoRedLeft extends LinearOpMode {
 
         switch(vuMark){
             case LEFT:
-                rot = 2000;
+                rot = 1850;
                 break;
             case CENTER:
                 rot = 1500;
                 break;
             case RIGHT:
-                rot = 1000;
+                rot = 1300;
                 break;
         }
 
 
-        bot.drive(0,-0.5f);
+        bot.drive(-0.3,-0.5f);
         sleep(rot);
         bot.stop();
         bot.drive(0.4f,0);
@@ -184,6 +214,7 @@ public class AutoRedLeft extends LinearOpMode {
         bot.grip(false);
         sleep(500);
         bot.drive(-0.2f,0);
+        sleep(500);
         bot.stop();
 
     }

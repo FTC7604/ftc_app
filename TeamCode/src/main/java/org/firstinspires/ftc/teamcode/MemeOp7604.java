@@ -41,6 +41,7 @@ public class MemeOp7604 extends OpMode{
 
     double twistValue = 0;
     double uperValue = 0;
+    double stickValue = 0;
 
     boolean gripPressed = false;
     boolean uperPressed = false;
@@ -119,7 +120,6 @@ public class MemeOp7604 extends OpMode{
 
         telemetry.addData("rsy1", "%f %f", gamepad1.right_stick_y, rightPower1);
         telemetry.addData("lsy1", "%f %f", gamepad1.left_stick_y, leftPower1);
-
         telemetry.addData("rsy1", "%f %f", -gamepad1.left_stick_y, rightPower1);
         telemetry.addData("lsy1", "%f %f", -gamepad1.right_stick_y, leftPower1);
 
@@ -174,11 +174,12 @@ public class MemeOp7604 extends OpMode{
         RightGripBottom.setPosition(0.5 - gripValue);
 
         if(gamepad1.dpad_left){
-            ColorStick.setPosition(0.5);
+            stickValue = 0.5;
         }
         else if(gamepad1.dpad_right){
-            ColorStick.setPosition(0);
+            stickValue = 0;
         }
+        ColorStick.setPosition(stickValue);
 
 
         // --------------------------- Second controller
