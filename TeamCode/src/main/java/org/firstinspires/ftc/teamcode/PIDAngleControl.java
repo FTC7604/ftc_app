@@ -72,7 +72,7 @@ public class PIDAngleControl implements SensorEventListener
         SensorManager.getRotationMatrixFromVector(rotation, sensorEvent.values);
         SensorManager.getOrientation(rotation, orientation);
 
-        float azimuth = orientation[0];
+        float azimuth = orientation[2];
 
         if (startingValue == -1)
         {
@@ -91,7 +91,7 @@ public class PIDAngleControl implements SensorEventListener
             long currentTime = System.currentTimeMillis();
             float elapsedTime = 0.001f * (currentTime - lastTime);
 
-            error = modStartingValue -                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   azimuth;
+            error = modStartingValue - azimuth;
 
             telemetry.addData("starting value", startingValue);
             telemetry.addData("starting value (mod)", modStartingValue);

@@ -16,8 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Created by Declan on 11/13/2017.
  */
 
-//@Autonomous(name = "AutoRedLeft", group = "7604")
-public class GenericAutonomous extends LinearOpMode {
+public class AutonomousCode extends LinearOpMode {
     Position position = null;
 
     public enum Position {
@@ -27,7 +26,7 @@ public class GenericAutonomous extends LinearOpMode {
             this.direction = direction;
         }
     }
-    public GenericAutonomous(Position position){
+    public AutonomousCode(Position position){
         this.position = position;
     }
 

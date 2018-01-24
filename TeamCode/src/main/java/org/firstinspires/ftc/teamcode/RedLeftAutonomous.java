@@ -4,13 +4,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 /**
- * Created by Declan on 1/23/2018.
+ * Created by ssuri on 1/23/18.
+ *
  */
 
 @Autonomous(name = "RedLeftAutonomous")
 public class RedLeftAutonomous extends OpMode
 {
-    private OpMode mainOp = new GenericAutonomous(GenericAutonomous.Position.RedLeft);
+    private OpMode mainOp = new AutonomousCode(AutonomousCode.Position.RedLeft);
 
     @Override public void init()
     {
@@ -23,5 +24,5 @@ public class RedLeftAutonomous extends OpMode
     @Override public void init_loop() { mainOp.init_loop(); }
     @Override public void start() { mainOp.start(); }
     @Override public void loop() { mainOp.loop(); }
-    @Override public void stop() { mainOp.stop(); }
+    @Override public void stop() { /*mainOp.stop();*/ }
 }
