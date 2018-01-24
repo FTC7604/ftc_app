@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Created by Declan on 11/13/2017.
  */
 
-public class AutonomousCode extends LinearOpMode {
+public class AutonomousMain extends AbstractLinearOpMode {
     Position position = null;
 
     public enum Position {
@@ -26,22 +26,24 @@ public class AutonomousCode extends LinearOpMode {
             this.direction = direction;
         }
     }
-    public AutonomousCode(Position position){
+
+    public AutonomousMain(Position position){
         this.position = position;
     }
 
+    Robot7604 bot;
     @Override
-    public void runOpMode () {
+    public void startLinear ()
+    {
+        bot = new Robot7604(this.callingOpMode);
+        //PIDAngleControl pid = new PIDAngleControl(this);
+    }
+
+    @Override
+    public void runLinear()
+    {
         long timeInit;
         int direction = position.direction;
-
-        Robot7604 bot = new Robot7604(this);
-
-        //PIDAngleControl pid = new PIDAngleControl(this);
-
-        waitForStart();
-
-
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources()
                 .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -139,14 +141,6 @@ public class AutonomousCode extends LinearOpMode {
                 bot.stop();
             }
         }
-
-
-
-
-
-
-
-
 
         /*
         bot.drive(-0.2f, 0);
