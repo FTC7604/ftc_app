@@ -34,6 +34,8 @@ public class Robot7604
     Servo LeftGrip, RightGrip;
     Servo LeftGripBottom, RightGripBottom;
 
+    DcMotor Led1; //Led stream
+    DcMotor Led2; //Led stream
 
     public Robot7604(OpMode op)
     {
@@ -64,6 +66,9 @@ public class Robot7604
         RightGripBottom = hardwareMap.servo.get("RightGripBottom");
         SvingerDvinger = hardwareMap.dcMotor.get("SvingerDvinger");
         ColorStick = hardwareMap.servo.get("ColorStick");
+
+        Led1 = hardwareMap.dcMotor.get("Led1");
+        Led2 = hardwareMap.dcMotor.get("Led2");
 
         FrontLeft.setDirection(REVERSE);
         //FrontRight.setDirection(REVERSE);

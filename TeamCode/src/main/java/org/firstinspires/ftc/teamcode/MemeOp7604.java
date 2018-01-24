@@ -105,10 +105,10 @@ public class MemeOp7604 extends OpMode{
 
 
         double powerMult = power / powerLevels;
-        double leftPower1 = powerMult * gamepad2.left_stick_y;
-        double rightPower1 = powerMult * gamepad2.right_stick_y;
-        double rightPower2 = -1 * powerMult * gamepad1.left_stick_y;
-        double leftPower2 =  -1 * powerMult * gamepad1.right_stick_y;
+        double leftPower1 = powerMult * (gamepad2.left_stick_y - gamepad2.right_stick_x);
+        double rightPower1 = powerMult * (gamepad2.left_stick_y + gamepad2.right_stick_x);
+        double rightPower2 = -1 * powerMult * (gamepad1.left_stick_y - gamepad1.right_stick_x);
+        double leftPower2 =  -1 * powerMult * (gamepad1.left_stick_y + gamepad1.right_stick_x);
 
         //double rudderPower = powerMult * gamepad1.left_stick_x;
 
@@ -201,6 +201,7 @@ public class MemeOp7604 extends OpMode{
         if(gamepad2.right_bumper || gamepad2.left_bumper){
             LeftHook.setPosition(gamepad2.right_bumper ? 1 : 0);
             RightHook.setPosition(gamepad2.right_bumper ? 0 : 1);
+            telemetry.addData("Hook", gamepad2.right_bumper ? 0: 1);
         }
 
         if(gamepad2.y){
@@ -220,6 +221,8 @@ public class MemeOp7604 extends OpMode{
         }
 
         Upercut.setPosition(uperValue);
+
+        telemetry.addData("upervalue", uperValue);
 
         telemetry.addData("gripValue", gripValue);
         telemetry.update();

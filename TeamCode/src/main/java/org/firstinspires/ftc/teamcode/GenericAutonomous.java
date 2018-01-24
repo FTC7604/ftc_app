@@ -16,35 +16,25 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Created by Declan on 11/13/2017.
  */
 
-@Autonomous(name = "AutoRedLeft", group = "7604")
-public class AutoRedLeft extends LinearOpMode {
-    String position = "redleft";
+//@Autonomous(name = "AutoRedLeft", group = "7604")
+public class GenericAutonomous extends LinearOpMode {
+    Position position = null;
 
-    public void AutoRedLeft(String position){
-        position = this.position;
+    public enum Position {
+        RedLeft(-1), RedRight(-1), BlueLeft(-1), BlueRight(-1);
+        private int direction;
+        Position(int direction) {
+            this.direction = direction;
+        }
+    }
+    public GenericAutonomous(Position position){
+        this.position = position;
     }
 
     @Override
     public void runOpMode () {
-
-
-
         long timeInit;
-        int direction = 0;
-        switch(position){
-            case "redleft":
-                direction = -1;
-                break;
-            case "redright":
-                direction = -1;
-                break;
-            case "blueleft":
-                direction = 1;
-                break;
-            case "blueright":
-                direction = 1;
-                break;
-        }
+        int direction = position.direction;
 
         Robot7604 bot = new Robot7604(this);
 
@@ -194,24 +184,37 @@ public class AutoRedLeft extends LinearOpMode {
 
         switch(vuMark){
             case LEFT:
-                rot = 1850;
+                rot = 7000;
                 break;
             case CENTER:
-                rot = 1500;
+                rot = 5000;
                 break;
             case RIGHT:
-                rot = 1300;
+                rot = 3250;
                 break;
         }
 
 
-        bot.drive(-0.3,-0.5f);
-        sleep(rot);
+        /*bot.drive(-0.3,-0.5);
+        sleep(rot);*/
+
+        int leftwheelthresh = bot.Led1.getCurrentPosition();
+        int rightwheelthresh = bot.Lift.getCurrentPosition();
+
+        while(bot.Led1.getCurrentPosition() - leftwheelthresh + bot.Lift.getCurrentPosition() - rightwheelthresh < rot){
+            bot.drive(-0.3,-0.5);
+        }
+
         bot.stop();
+        sleep(500);
         bot.drive(0.4f,0);
         sleep(600);
         bot.stop();
         bot.grip(false);
+        sleep(500);
+        bot.drive(-0.2f,0);
+        sleep(500);
+        bot.drive(0.2f, 0);
         sleep(500);
         bot.drive(-0.2f,0);
         sleep(500);
