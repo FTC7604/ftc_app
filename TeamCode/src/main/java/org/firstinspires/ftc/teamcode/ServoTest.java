@@ -2,20 +2,18 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@TeleOp(name = "ServoTester", group = "7604")
-public class ServoTest extends OpMode {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "ServoTest")
+public class ServoTest extends LinearOpMode {
 	Servo servo;
 	Servo contServo;
 	
 	@Override
-	public void init() {
+	public void runOpMode() {
 		servo = hardwareMap.servo.get("servo");
 		contServo = hardwareMap.servo.get("contServo");
-	}
-	
-	@Override
-	public void loop() {
+		waitForStart();
 		servo.setPosition(1);
 		sleep(500);
 		servo.setPosition(0);
