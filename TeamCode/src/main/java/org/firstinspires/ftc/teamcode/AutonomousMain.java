@@ -20,7 +20,7 @@ public class AutonomousMain extends AbstractLinearOpMode {
     Position position = null;
 
     public enum Position {
-        RedLeft(-1), RedRight(-1), BlueLeft(-1), BlueRight(-1);
+        RedLeft(-1), RedRight(-1), BlueLeft(1), BlueRight(1);
         private int direction;
         Position(int direction) {
             this.direction = direction;
@@ -44,6 +44,7 @@ public class AutonomousMain extends AbstractLinearOpMode {
     {
         long timeInit;
         int direction = position.direction;
+        int step = 0; // For debugging purposes only
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources()
                 .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -71,7 +72,7 @@ public class AutonomousMain extends AbstractLinearOpMode {
             vuMark = RelicRecoveryVuMark.from(relicTemplate);
         }
 
-
+        telemetry.addData("direction", direction);
         telemetry.addData("VuMark", vuMark);
         telemetry.update();
         sleep(500);
@@ -79,6 +80,9 @@ public class AutonomousMain extends AbstractLinearOpMode {
 
 
 
+        step++;
+        telemetry.addData("step", step);
+        telemetry.update();
 
         bot.grip(true);
 
@@ -98,11 +102,19 @@ public class AutonomousMain extends AbstractLinearOpMode {
 
         timeInit = System.currentTimeMillis();
 
+        step++;
+        telemetry.addData("step", step);
+        telemetry.update();
         while(System.currentTimeMillis() - timeInit < 1000 && opModeIsActive()) {
             telemetry.addData("RawCS", bot.CSensor.getRawLightDetected());
 
             telemetry.update();
         }
+
+
+        step++;
+        telemetry.addData("step", step);
+        telemetry.update();
 
         if(bot.CSensor.getRawLightDetected() < 1.75 ^ (direction == 1)){
             bot.drive(0.2,0);
@@ -142,6 +154,10 @@ public class AutonomousMain extends AbstractLinearOpMode {
             }
         }
 
+        step++;
+        telemetry.addData("step", step);
+        telemetry.update();
+
         /*
         bot.drive(-0.2f, 0);
         sleep(400);
@@ -149,19 +165,28 @@ public class AutonomousMain extends AbstractLinearOpMode {
         sleep(500);
         */
         double redGray = 1.325;
-        double blueGray = 1.05;
+        double blueGray = 1.07;
 
         double LThreshold = (redGray + blueGray) / 2 + (direction * ((blueGray - redGray)/2));
         bot.LSensor.enableLed(true);
-        timeInit = System.currentTimeMillis();
-        while(System.currentTimeMillis() - timeInit < 1000 && opModeIsActive()){
-            bot.drive(direction * 0.3f, 0);
-        }
-        while(bot.LSensor.getRawLightDetected() < LThreshold && opModeIsActive()){
+        bot.drive(direction * 0.3, 0);
+        sleep(1000);
+
+
+        step++;
+        telemetry.addData("step", step);
+        telemetry.update();
+
+        while(-direction * bot.LSensor.getRawLightDetected() < -direction * LThreshold && opModeIsActive()){
             bot.drive(direction * 0.3f, 0);
             telemetry.addData("LValue", bot.LSensor.getRawLightDetected());
             telemetry.update();
         }
+
+        step++;
+        telemetry.addData("step", step);
+        telemetry.update();
+
         bot.stop();
         sleep(500);
 
@@ -175,18 +200,34 @@ public class AutonomousMain extends AbstractLinearOpMode {
 
         long rot = 0;
 
-        switch(vuMark){
-            case LEFT:
-                rot = 7000;
-                break;
-            case CENTER:
-                rot = 5000;
-                break;
-            case RIGHT:
-                rot = 3250;
-                break;
+        switch(direction) {
+            case(-1):
+                switch (vuMark) {
+                    case LEFT:
+                        rot = 6000;
+                        break;
+                    case CENTER:
+                        rot = 5000;
+                        break;
+                    default: //RIGHT
+                        rot = 3500;
+                        break;
+                }
+            break;
+            case(1):
+                switch (vuMark) {
+                    case LEFT:
+                        rot = 3000;
+                        break;
+                    case CENTER:
+                        rot = 2000;
+                        break;
+                    default: //RIGHT
+                        rot = 1000;
+                        break;
+                }
+            break;
         }
-
 
         /*bot.drive(-0.3,-0.5);
         sleep(rot);*/
@@ -201,6 +242,7 @@ public class AutonomousMain extends AbstractLinearOpMode {
         bot.stop();
         sleep(500);
         bot.drive(0.4f,0);
+
         sleep(600);
         bot.stop();
         bot.grip(false);
@@ -208,9 +250,9 @@ public class AutonomousMain extends AbstractLinearOpMode {
         bot.drive(-0.2f,0);
         sleep(500);
         bot.drive(0.2f, 0);
-        sleep(500);
+        sleep(1000);
         bot.drive(-0.2f,0);
-        sleep(500);
+        sleep(1000);
         bot.stop();
 
     }
