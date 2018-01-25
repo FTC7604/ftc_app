@@ -30,13 +30,13 @@ public class MemeOp7604 extends OpMode{
     Servo LeftGripBottom, RightGripBottom;
 
     LightSensor LSensor;
-    LightSensor RSensor;
     LightSensor CSensor;
 
     DcMotor Led1; //Led stream
     DcMotor Led2; //Led stream
 
     double power = 1;
+    double powerLevels = 1;
     int liftPower = 0;
 
     double twistValue = 0;
@@ -79,7 +79,6 @@ public class MemeOp7604 extends OpMode{
         BackRight.setDirection(REVERSE);
 
         LSensor = hardwareMap.get(LightSensor.class, "LightSensor");
-        RSensor = hardwareMap.get(LightSensor.class, "LightSensor2");
         CSensor = hardwareMap.get(LightSensor.class, "ColorSensor");
     }
 
@@ -95,22 +94,21 @@ public class MemeOp7604 extends OpMode{
     public void loop() {
 
         LSensor.enableLed(true);
-        RSensor.enableLed(true);
         CSensor.enableLed(true);
 
         telemetry.addData("LSensor", LSensor.getRawLightDetected());
         telemetry.addData("CSensor", CSensor.getRawLightDetected());
-        telemetry.addData("RSensor", RSensor.getRawLightDetected());
         telemetry.addData("Encoder 1", Led1.getCurrentPosition());
         telemetry.addData("Encoder 2", Led2.getCurrentPosition());
         telemetry.addData("Encoder 3", Lift.getCurrentPosition());
         telemetry.addData("Encoder 4", Slide.getCurrentPosition());
 
 
-        double leftPower1 = power * (gamepad2.left_stick_y - gamepad2.right_stick_x);
-        double rightPower1 = power * (gamepad2.left_stick_y + gamepad2.right_stick_x);
-        double rightPower2 = -1 * power * (gamepad1.left_stick_y - gamepad1.right_stick_x);
-        double leftPower2 =  -1 * power * (gamepad1.left_stick_y + gamepad1.right_stick_x);
+        double powerMult = power / powerLevels;
+        double leftPower1 = powerMult * (gamepad2.left_stick_y - gamepad2.right_stick_x);
+        double rightPower1 = powerMult * (gamepad2.left_stick_y + gamepad2.right_stick_x);
+        double rightPower2 = -1 * powerMult * (gamepad1.left_stick_y - gamepad1.right_stick_x);
+        double leftPower2 =  -1 * powerMult * (gamepad1.left_stick_y + gamepad1.right_stick_x);
 
         //double rudderPower = powerMult * gamepad1.left_stick_x;
 
@@ -129,15 +127,29 @@ public class MemeOp7604 extends OpMode{
 
         Lift.setPower(liftPower);
 
-        if(gamepad1.right_stick_button || gamepad2.right_stick_button)
+        /*if(gamepad1.x)
         {
-            power = 0.3;
+            if(power == powerLevels)
+            {
+                power = 1;
+            }
+            else
+            {
+                power++;
+            }
         }
+        else if(gamepad1.y)
+        {
+            if(power == 1)
+            {
+                power = powerLevels;
+            }
+            else
+            {
+                power--;
+            }
+        }*/
 
-        if(gamepad1.left_stick_button || gamepad2.left_stick_button)
-        {
-            power = 1.0;
-        }
         SvingerDvinger.setPower(gamepad1.y ? 1 : gamepad1.x ? -1 : 0);
 
         if(gamepad1.left_bumper){
