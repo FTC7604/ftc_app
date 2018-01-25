@@ -182,7 +182,7 @@ public class AutonomousMain extends AbstractLinearOpMode {
             case CENTER:
                 rot = 5000;
                 break;
-            case RIGHT:
+            default: //RIGHT
                 rot = 3250;
                 break;
         }
