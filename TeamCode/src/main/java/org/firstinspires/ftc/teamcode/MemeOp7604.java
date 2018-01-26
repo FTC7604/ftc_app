@@ -48,6 +48,8 @@ public class MemeOp7604 extends OpMode{
 
     double gripValue = 0.5;
 
+    boolean routineend = false;
+
 
     @Override
     public void init() {
@@ -219,7 +221,17 @@ public class MemeOp7604 extends OpMode{
         else{
             uperPressed = false;
         }
+        /*
+        if(somerandomcrpbutton){
+            while(!routineend){
+                dosomebullcrap();
 
+                if(conditionsfinished || keypressedasecondtime){
+                    routineend = true;
+                }
+            }
+        }
+        */
         Upercut.setPosition(uperValue);
 
         telemetry.addData("upervalue", uperValue);
