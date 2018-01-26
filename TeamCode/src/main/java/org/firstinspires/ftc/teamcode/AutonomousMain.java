@@ -177,7 +177,7 @@ public class AutonomousMain extends AbstractLinearOpMode {
         telemetry.addData("step", step);
         telemetry.update();
 
-        while(-direction * bot.LSensor.getRawLightDetected() < -direction * LThreshold && opModeIsActive()){
+        while(-1 * direction * bot.LSensor.getRawLightDetected() < -1 * direction * LThreshold && opModeIsActive()){
             bot.drive(direction * 0.3f, 0);
             telemetry.addData("LValue", bot.LSensor.getRawLightDetected());
             telemetry.update();
