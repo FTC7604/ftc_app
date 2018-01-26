@@ -114,8 +114,11 @@ public class AutonomousMain extends AbstractLinearOpMode {
 
         step++;
         telemetry.addData("step", step);
+
+
         telemetry.update();
 
+        // blue jewel XOR blue alliance
         if(bot.CSensor.getRawLightDetected() < 1.75 ^ (direction == 1)){
             bot.drive(0.2,0);
             telemetry.addData("Choice", "Forwards");
@@ -128,11 +131,9 @@ public class AutonomousMain extends AbstractLinearOpMode {
             bot.ColorStick.setPosition(0);
             sleep(500);
 
-            if(direction == -1) {
-                bot.drive(-0.2, 0);
-                sleep(2000);
-                bot.stop();
-            }
+            bot.drive(direction * 0.2, 0);
+            sleep(direction == -1 ? 6000 : 5200);
+            bot.stop();
         }
         else{
             bot.drive(-0.2,0);
@@ -146,13 +147,12 @@ public class AutonomousMain extends AbstractLinearOpMode {
             bot.ColorStick.setPosition(0);
             sleep(500);
 
-
-            if(direction == 1) {
-                bot.drive(0.2, 0);
-                sleep(3000);
-                bot.stop();
-            }
+            bot.drive(0.2 * direction, 0);
+            sleep(direction == -1 ? 5200 : 6000);
+            bot.stop();
         }
+
+        while(opModeIsActive()){}
 
         step++;
         telemetry.addData("step", step);
@@ -165,7 +165,7 @@ public class AutonomousMain extends AbstractLinearOpMode {
         sleep(500);
         */
         double redGray = 1.325;
-        double blueGray = 1.07;
+        double blueGray = 1.185;
 
         double LThreshold = (redGray + blueGray) / 2 + (direction * ((blueGray - redGray)/2));
         bot.LSensor.enableLed(true);
@@ -177,10 +177,36 @@ public class AutonomousMain extends AbstractLinearOpMode {
         telemetry.addData("step", step);
         telemetry.update();
 
-        while(-1 * direction * bot.LSensor.getRawLightDetected() < -1 * direction * LThreshold && opModeIsActive()){
+//        while(-1 * direction * bot.LSensor.getRawLightDetected() < -1 * direction * LThreshold && opModeIsActive()){
+//            bot.drive(direction * 0.3f, 0);
+//            telemetry.addData("LValue", bot.LSensor.getRawLightDetected());
+//            telemetry.update();
+//        }
+
+        if(direction == -1)
+        {
+            while(bot.LSensor.getRawLightDetected() < LThreshold && opModeIsActive())
+            {
+                bot.drive(direction * 0.3f, 0);
+                telemetry.addData("LValue", bot.LSensor.getRawLightDetected());
+                telemetry.update();
+            }
+        }
+        else
+        {
             bot.drive(direction * 0.3f, 0);
-            telemetry.addData("LValue", bot.LSensor.getRawLightDetected());
-            telemetry.update();
+            DifferentiatorList dl = new DifferentiatorList(150);
+            while(opModeIsActive())
+            {
+                dl.add(bot.LSensor.getRawLightDetected());
+                double derivative = dl.derive();
+                if(Math.abs(derivative) >= 0.007)
+                {
+                    break;
+                }
+                telemetry.addData("dLValue/dt", derivative);
+                telemetry.update();
+            }
         }
 
         step++;

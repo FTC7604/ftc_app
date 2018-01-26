@@ -263,6 +263,7 @@ public class MemeOp7604 extends OpMode{
                     routineend = true;
                 }
             }
+            routineend = false;
         }
 
         Upercut.setPosition(uperValue);
