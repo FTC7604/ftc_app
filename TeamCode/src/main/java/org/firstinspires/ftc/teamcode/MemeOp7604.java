@@ -35,6 +35,9 @@ public class MemeOp7604 extends OpMode{
     DcMotor Led1; //Led stream
     DcMotor Led2; //Led stream
 
+    long timeInit;
+    long timeDiff;
+
     double power = 1;
     double powerLevels = 1;
     int liftPower = 0;
@@ -221,17 +224,46 @@ public class MemeOp7604 extends OpMode{
         else{
             uperPressed = false;
         }
-        /*
-        if(somerandomcrpbutton){
-            while(!routineend){
-                dosomebullcrap();
 
-                if(conditionsfinished || keypressedasecondtime){
+        if(gamepad1.right_trigger > 0.5){
+            timeInit = System.currentTimeMillis();
+            while(!routineend){
+                timeDiff = System.currentTimeMillis() - timeInit;
+                if(timeDiff < 500){
+                    Slide.setPower(1);
+                }
+                else if(timeDiff > 500 && timeDiff < 1000){
+                    Lift.setPower(-0.3);
+                }
+                else if(timeDiff > 1000 && timeDiff < 1500){
+                    Slide.setPower(0);
+                    Upercut.setPosition(0);
+                }
+                else if(timeDiff > 1500 && timeDiff < 2000){
+                    Lift.setPower(0);
+                }
+                else if(timeDiff > 2000 && timeDiff < 2500){
+                    LeftHook.setPosition(0);
+                }
+                else if(timeDiff > 2500 && timeDiff < 3000){
+                    Lift.setPower(0.3);
+                }
+                else if(timeDiff > 3000 && timeDiff < 3500){
+                    Slide.setPower(-0.3);
+                }
+                else if(timeDiff > 3500 && timeDiff < 4000){
+                    Slide.setPower(0);
+                }
+                else if(timeDiff > 4000 && timeDiff < 4500){
+                    Lift.setPower(0);
+                }
+
+                if(timeDiff > 4500 || gamepad1.left_trigger > 0.5){
                     routineend = true;
                 }
             }
         }
-        */
+
         Upercut.setPosition(uperValue);
 
         telemetry.addData("upervalue", uperValue);
