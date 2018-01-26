@@ -132,7 +132,7 @@ public class AutonomousMain extends AbstractLinearOpMode {
             sleep(500);
 
             bot.drive(direction * 0.2, 0);
-            sleep(direction == -1 ? 6000 : 5200);
+            sleep(direction == -1 ? 5500 : 4700);
             bot.stop();
         }
         else{
@@ -148,11 +148,9 @@ public class AutonomousMain extends AbstractLinearOpMode {
             sleep(500);
 
             bot.drive(0.2 * direction, 0);
-            sleep(direction == -1 ? 5200 : 6000);
+            sleep(direction == -1 ? 4700 : 5500);
             bot.stop();
         }
-
-        while(opModeIsActive()){}
 
         step++;
         telemetry.addData("step", step);
@@ -187,14 +185,14 @@ public class AutonomousMain extends AbstractLinearOpMode {
         {
             while(bot.LSensor.getRawLightDetected() < LThreshold && opModeIsActive())
             {
-                bot.drive(direction * 0.3f, 0);
+                bot.drive(-0.3f, 0);
                 telemetry.addData("LValue", bot.LSensor.getRawLightDetected());
                 telemetry.update();
             }
         }
         else
         {
-            bot.drive(direction * 0.3f, 0);
+            bot.drive(0.3f, 0);
             DifferentiatorList dl = new DifferentiatorList(150);
             while(opModeIsActive())
             {
@@ -243,13 +241,13 @@ public class AutonomousMain extends AbstractLinearOpMode {
             case(1):
                 switch (vuMark) {
                     case LEFT:
-                        rot = 3000;
+                        rot = 4500;
                         break;
                     case CENTER:
-                        rot = 2000;
+                        rot = 3500;
                         break;
                     default: //RIGHT
-                        rot = 1000;
+                        rot = 2500;
                         break;
                 }
             break;
