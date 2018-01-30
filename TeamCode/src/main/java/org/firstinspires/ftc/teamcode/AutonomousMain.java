@@ -14,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 /**
  * Created by Declan on 11/13/2017.
+ *
  */
 
 public class AutonomousMain extends AbstractLinearOpMode {
@@ -33,7 +34,7 @@ public class AutonomousMain extends AbstractLinearOpMode {
 
     Robot7604 bot;
     @Override
-    public void startLinear ()
+    public void startLinear()
     {
         bot = new Robot7604(this.callingOpMode);
         //PIDAngleControl pid = new PIDAngleControl(this);
@@ -90,7 +91,7 @@ public class AutonomousMain extends AbstractLinearOpMode {
 
 
         bot.SvingerDvinger.setPower(1);
-        sleep(500);
+        sleep(800);
         bot.SvingerDvinger.setPower(0);
         sleep(500);
 
@@ -119,7 +120,7 @@ public class AutonomousMain extends AbstractLinearOpMode {
         telemetry.update();
 
         // blue jewel XOR blue alliance
-        if(bot.CSensor.getRawLightDetected() < 1.75 ^ (direction == 1)){
+        if(bot.CSensor.getRawLightDetected() < 1.5 ^ (direction == 1)){
             bot.drive(0.2,0);
             telemetry.addData("Choice", "Forwards");
             telemetry.update();
@@ -132,7 +133,7 @@ public class AutonomousMain extends AbstractLinearOpMode {
             sleep(500);
 
             bot.drive(direction * 0.2, 0);
-            sleep(direction == -1 ? 5500 : 4700);
+            sleep(direction == -1 ? 1500 : 2700);
             bot.stop();
         }
         else{
@@ -148,7 +149,7 @@ public class AutonomousMain extends AbstractLinearOpMode {
             sleep(500);
 
             bot.drive(0.2 * direction, 0);
-            sleep(direction == -1 ? 4700 : 5500);
+            sleep(direction == -1 ? 2700 : 1500);
             bot.stop();
         }
 
@@ -162,10 +163,10 @@ public class AutonomousMain extends AbstractLinearOpMode {
         bot.stop();
         sleep(500);
         */
-        double redGray = 1.325;
+        double redGray = 1.3;
         double blueGray = 1.185;
 
-        double LThreshold = (redGray + blueGray) / 2 + (direction * ((blueGray - redGray)/2));
+        double LThreshold = redGray;
         bot.LSensor.enableLed(true);
         bot.drive(direction * 0.3, 0);
         sleep(1000);
@@ -193,18 +194,26 @@ public class AutonomousMain extends AbstractLinearOpMode {
         else
         {
             bot.drive(0.3f, 0);
-            DifferentiatorList dl = new DifferentiatorList(150);
-            while(opModeIsActive())
+            long startTime = System.currentTimeMillis();
+            while((System.currentTimeMillis() - startTime) < 100 && opModeIsActive())
             {
-                dl.add(bot.LSensor.getRawLightDetected());
-                double derivative = dl.derive();
-                if(Math.abs(derivative) >= 0.007)
-                {
-                    break;
-                }
-                telemetry.addData("dLValue/dt", derivative);
+                bot.drive( 0.3f, 0);
+                telemetry.addData("LValue", bot.LSensor.getRawLightDetected());
                 telemetry.update();
             }
+
+//            DifferentiatorList dl = new DifferentiatorList(150);
+//            while(opModeIsActive())
+//            {
+//                dl.add(bot.LSensor.getRawLightDetected());
+//                double derivative = dl.derive();
+//                if(Math.abs(derivative) >= 0.007)
+//                {
+//                    break;
+//                }
+//                telemetry.addData("dLValue/dt", derivative);
+//                telemetry.update();
+//            }
         }
 
         step++;
