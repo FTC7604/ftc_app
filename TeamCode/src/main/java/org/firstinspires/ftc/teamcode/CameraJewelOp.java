@@ -10,7 +10,10 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
 import java.nio.ByteBuffer;
-import java.util.concurrent.BlockingQueue;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CloseableFrame;
 
@@ -22,7 +25,8 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 @Autonomous(name="CameraJewelOp")
 public class CameraJewelOp extends OpMode
 {
-    VuforiaLocalizer vuforia;
+    private VuforiaLocalizer vuforia;
+    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss", Locale.US);
 
     @Override
     public void init()
@@ -72,7 +76,29 @@ public class CameraJewelOp extends OpMode
                     imgArr[x][y][2] = buf.get(i+2);
                 }
 
-                CSVWriter writer = new CSVWriter("JewelTest.csv");
+                CSVWriter writer = new CSVWriter(String.format("JewelTest-%s.csv", dateFormat.format(new Date())));
+
+                Object[] red = new Object[imgArr.length + 1], green = new Object[imgArr.length + 1], blue = new Object[imgArr.length + 1];
+                for(int x = 0; x < imgArr.length; x++)
+                {
+                    int redSum = 0;
+                    int greenSum = 0;
+                    int blueSum = 0;
+                    for(int y = 0; y < imgArr[x].length; y++)
+                    {
+                        redSum += imgArr[x][y][0];
+                        greenSum += imgArr[x][y][1];
+                        blueSum += imgArr[x][y][2];
+                    }
+                    double height = imgArr[x].length;
+                    red[x + 1] = redSum / height;
+                    green[x + 1] = greenSum / height;
+                    blue[x + 1] = blueSum / height;
+                }
+
+                writer.writeLine(red);
+                writer.writeLine(green);
+                writer.writeLine(blue);
             }
         }
         catch(InterruptedException e)

@@ -29,7 +29,7 @@ public class CSVWriter
 		{}
 	}
 
-	public void writeLine(String... toWrite)
+	public void writeLine(Object... toWrite)
     {
         for(int i = 0; i < toWrite.length; i++)
         {
