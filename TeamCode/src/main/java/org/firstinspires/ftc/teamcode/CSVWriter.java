@@ -11,12 +11,12 @@ import java.util.Locale;
 public class CSVWriter
 {
 	private Writer writer;
+	private String filePath;
 
 	public CSVWriter(String fileName)
 	{
-		// String directoryPath = "/sdcard/FIRST/CSVWriter";
 		String directoryPath = Environment.getExternalStorageDirectory().getPath() + "/FIRST/CSVWriter";
-		String filePath = directoryPath + "/" + fileName + ".csv";
+		filePath = directoryPath + "/" + fileName + ".csv";
 
 		// noinspection ResultOfMethodCallIgnored
 		new File(directoryPath).mkdirs(); // Make sure that the directory exists
@@ -25,9 +25,14 @@ public class CSVWriter
 		{
 			writer = new FileWriter(filePath);
 		}
-		catch (IOException ignored)
+		catch (IOException ioe)
 		{}
 	}
+
+	public String getFilePath()
+    {
+        return filePath;
+    }
 
 	public void writeLine(Object... toWrite)
     {

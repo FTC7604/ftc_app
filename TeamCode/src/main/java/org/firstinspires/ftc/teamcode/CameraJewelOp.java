@@ -1,7 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.os.Environment;
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.vuforia.CameraDevice;
 import com.vuforia.Image;
 import com.vuforia.PIXEL_FORMAT;
 import com.vuforia.Vuforia;
@@ -9,7 +15,9 @@ import com.vuforia.Vuforia;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
-import java.nio.ByteBuffer;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,13 +31,12 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  */
 
 @Autonomous(name="CameraJewelOp")
-public class CameraJewelOp extends OpMode
+public class CameraJewelOp extends LinearOpMode
 {
-    private VuforiaLocalizer vuforia;
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss", Locale.US);
 
     @Override
-    public void init()
+    public void runOpMode()
     {
         int cameraMonitorViewId = hardwareMap.appContext.getResources()
                 .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -39,99 +46,93 @@ public class CameraJewelOp extends OpMode
         parameters.vuforiaLicenseKey = "ASv2MNj/////AAAAGQukwPKRd0YcsSlpoJYzs9EdjNGpnGv0mY+oWYr923xV6ZP+Tm9A7ZjZvdw7KY3iqJ/2AXpNLeHZLylMumJd46ZYL4zpkdjPY6OwGwUmQBrgo6MXWgIM6bKgp/0M1SJnb8yYpFjzTAqAXtXqotY5KPiLkelgBeCuPYc+NUAlf6vSxjEr7+Zezid1O2zV3dRV/FlaBJN9MQsgWOvPQfsTiKqgpEr2b4pLG8PMqL/HU3RvuEexsWSv5eN6mWtx8Vt7m+GSBC6xo9vxR+gaTLsi19RAXTPCq4UhoQvrFYIORotVeVa5zIhZXlpMc09NZT25e6DcOPTv2eloL55O2/FK81AGay8e4urLNQ5wF3vknehR";
 
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+        VuforiaLocalizer vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
         vuforia.setFrameQueueCapacity(1);
-        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB888, true);
-    }
+        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
 
-    @Override
-    public void loop()
-    {
+        CameraDevice cam = CameraDevice.getInstance();
+        cam.setField("auto-whitebalance-lock-supported", "false");
+
+        waitForStart();
+
+
         try
         {
             CloseableFrame frame = vuforia.getFrameQueue().take();
 
             Image img = null;
-            for(int i = 0; i < frame.getNumImages(); i++)
+            for (int i = 0; i < frame.getNumImages(); i++)
             {
                 Image possImg = frame.getImage(i);
-                if(img.getFormat() == PIXEL_FORMAT.RGB888)
+                if (possImg.getFormat() == PIXEL_FORMAT.RGB565)
                 {
                     img = possImg;
                 }
             }
-            if(img != null)
+            Log.d("MemeMachine", "Instantiating ImageWriter");
+
+            if(img != null && img.getPixels() != null)
             {
-                // reference: array[x][y]
-                ByteBuffer buf = img.getPixels();
-                byte[][][] imgArr = new byte[img.getWidth()][img.getHeight()][3];
-                for(int i = 0; i < img.getWidth() * img.getHeight(); i++)
-                {
-                    int x = i % img.getWidth();
-                    int y = i / img.getWidth();
+                Bitmap bm = Bitmap.createBitmap(img.getWidth(), img.getHeight(), Bitmap.Config.RGB_565);
+                bm.copyPixelsFromBuffer(img.getPixels());
 
-                    imgArr[x][y][0] = buf.get(i);
-                    imgArr[x][y][1] = buf.get(i+1);
-                    imgArr[x][y][2] = buf.get(i+2);
+
+                String directoryPath = Environment.getExternalStorageDirectory().getPath() + "/FIRST/CSVWriter";
+                String filePath = directoryPath + "/bitmap.png";
+
+                // noinspection ResultOfMethodCallIgnored
+
+                new File(directoryPath).mkdirs(); // Make sure that the directory exists
+                try
+                {
+                    FileOutputStream fOut = new FileOutputStream(new File(filePath));
+
+                    bm.compress(Bitmap.CompressFormat.PNG, 85, fOut);
+                    fOut.flush();
+                    fOut.close();
+                }
+                catch(IOException ignored)
+                {
+                    // lol no
                 }
 
-                CSVWriter writer = new CSVWriter(String.format("JewelTest-%s.csv", dateFormat.format(new Date())));
-
-                Object[] red = new Object[imgArr.length + 1], green = new Object[imgArr.length + 1], blue = new Object[imgArr.length + 1];
-                for(int x = 0; x < imgArr.length; x++)
+                double[] red = new double[bm.getWidth()],
+                       green = new double[bm.getWidth()],
+                        blue = new double[bm.getWidth()];
+                for (int x = 0; x < bm.getWidth(); x++)
                 {
-                    int redSum = 0;
-                    int greenSum = 0;
-                    int blueSum = 0;
-                    for(int y = 0; y < imgArr[x].length; y++)
+                    double redSum = 0;
+                    double greenSum = 0;
+                    double blueSum = 0;
+                    for (int y = 0; y < bm.getHeight(); y++)
                     {
-                        redSum += imgArr[x][y][0];
-                        greenSum += imgArr[x][y][1];
-                        blueSum += imgArr[x][y][2];
+                        int color = bm.getPixel(x, y);
+                        redSum += Color.red(color);
+                        greenSum += Color.green(color);
+                        blueSum += Color.blue(color);
                     }
-                    double height = imgArr[x].length;
-                    red[x + 1] = redSum / height;
-                    green[x + 1] = greenSum / height;
-                    blue[x + 1] = blueSum / height;
+                    double height = bm.getHeight();
+                    red[x] = redSum / height;
+                    green[x] = greenSum / height;
+                    blue[x] = blueSum / height;
                 }
 
-                writer.writeLine(red);
-                writer.writeLine(green);
-                writer.writeLine(blue);
+                CSVWriter writer = new CSVWriter("JewelTest-" + dateFormat.format(new Date()));
+
+                writer.writeLine("XPos", "Red", "Green", "Blue");
+                for(int i = 0; i < red.length; i++)
+                {
+                    writer.writeLine(i, red[i], green[i], blue[i]);
+                }
             }
-        }
-        catch(InterruptedException e)
+        } catch (InterruptedException e)
         {
             // InterruptedException:
-            // Thread was interrupted while watiing for the blocking queue to return a value
+            // Thread was interrupted while waiting for the blocking queue to return a value
             // This means (most likely) that the OpMode has already ended
             // Thus, we don't need to do anything
             // ssuri 01/30/18
         }
-
-    }
-
-    private String decode(int format)
-    {
-        switch(format)
-        {
-            case PIXEL_FORMAT.GRAYSCALE:
-                return "GRAYSCALE";
-            case PIXEL_FORMAT.INDEXED:
-                return "INDEXED";
-            case PIXEL_FORMAT.RGB565:
-                return "RGB565";
-            case PIXEL_FORMAT.RGB888:
-                return "RGB888";
-            case PIXEL_FORMAT.RGBA8888:
-                return "RGBA8888";
-            case PIXEL_FORMAT.UNKNOWN_FORMAT:
-                return "UNKNOWN_FORMAT";
-            case PIXEL_FORMAT.YUV:
-                return "YUV";
-        }
-
-        return "lol wut";
     }
 }
