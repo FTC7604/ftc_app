@@ -196,12 +196,12 @@ implements <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchRe
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchReadHistoryImpl.html#getHistoryQueueCapacity--">getHistoryQueueCapacity</a></span>()</code>
-<div class="block">Returns the current capacity of the history queue.</div>
+<div class="block">Returns the current valuesToHold of the history queue.</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchReadHistoryImpl.html#setHistoryQueueCapacity-int-">setHistoryQueueCapacity</a></span>(int&nbsp;capacity)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchReadHistoryImpl.html#setHistoryQueueCapacity-int-">setHistoryQueueCapacity</a></span>(int&nbsp;valuesToHold)</code>
 <div class="block">Sets the maximum number of <a href="../../../../com/qualcomm/robotcore/hardware/TimestampedI2cData.html" title="class in com.qualcomm.robotcore.hardware"><code>TimestampedI2cData</code></a>s that will simultaneously be stored in the
  history queue.</div>
 </td>
@@ -313,11 +313,11 @@ implements <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchRe
 <ul class="blockList">
 <li class="blockList">
 <h4>setHistoryQueueCapacity</h4>
-<pre>public&nbsp;void&nbsp;setHistoryQueueCapacity(int&nbsp;capacity)</pre>
+<pre>public&nbsp;void&nbsp;setHistoryQueueCapacity(int&nbsp;valuesToHold)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchReadHistory.html#setHistoryQueueCapacity-int-">I2cDeviceSynchReadHistory</a></code></span></div>
 <div class="block">Sets the maximum number of <a href="../../../../com/qualcomm/robotcore/hardware/TimestampedI2cData.html" title="class in com.qualcomm.robotcore.hardware"><code>TimestampedI2cData</code></a>s that will simultaneously be stored in the
  history queue. If the queue is full and new <a href="../../../../com/qualcomm/robotcore/hardware/TimestampedI2cData.html" title="class in com.qualcomm.robotcore.hardware"><code>TimestampedI2cData</code></a>s become available, older
- data will be discarded. The history queue initially has a capacity of zero.
+ data will be discarded. The history queue initially has a valuesToHold of zero.
 
  <p>Note that calling this method invalidates any history queue retrieved previously
  through <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchReadHistory.html#getHistoryQueue--"><code>I2cDeviceSynchReadHistory.getHistoryQueue()</code></a>.</p></div>
@@ -325,7 +325,7 @@ implements <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchRe
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchReadHistory.html#setHistoryQueueCapacity-int-">setHistoryQueueCapacity</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchReadHistory.html" title="interface in com.qualcomm.robotcore.hardware">I2cDeviceSynchReadHistory</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>capacity</code> - the maximum number of items that may be stored in the history queue</dd>
+<dd><code>valuesToHold</code> - the maximum number of items that may be stored in the history queue</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchReadHistory.html#getHistoryQueue--"><code>I2cDeviceSynchReadHistory.getHistoryQueue()</code></a>, 
 <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchReadHistory.html#getHistoryQueueCapacity--"><code>I2cDeviceSynchReadHistory.getHistoryQueueCapacity()</code></a></dd>
@@ -340,12 +340,12 @@ implements <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchRe
 <h4>getHistoryQueueCapacity</h4>
 <pre>public&nbsp;int&nbsp;getHistoryQueueCapacity()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchReadHistory.html#getHistoryQueueCapacity--">I2cDeviceSynchReadHistory</a></code></span></div>
-<div class="block">Returns the current capacity of the history queue.</div>
+<div class="block">Returns the current valuesToHold of the history queue.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchReadHistory.html#getHistoryQueueCapacity--">getHistoryQueueCapacity</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchReadHistory.html" title="interface in com.qualcomm.robotcore.hardware">I2cDeviceSynchReadHistory</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the current capacity of the history queue.</dd>
+<dd>the current valuesToHold of the history queue.</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchReadHistory.html#setHistoryQueueCapacity-int-"><code>I2cDeviceSynchReadHistory.setHistoryQueueCapacity(int)</code></a>, 
 <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchReadHistory.html#getHistoryQueue--"><code>I2cDeviceSynchReadHistory.getHistoryQueue()</code></a></dd>

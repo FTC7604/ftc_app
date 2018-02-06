@@ -176,7 +176,7 @@ var activeTableTab = "activeTableTab";
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.html#getFrameQueueCapacity--">getFrameQueueCapacity</a></span>()</code>
-<div class="block">Returns the current capacity of the frame queue.</div>
+<div class="block">Returns the current valuesToHold of the frame queue.</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
@@ -195,7 +195,7 @@ var activeTableTab = "activeTableTab";
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.html#setFrameQueueCapacity-int-">setFrameQueueCapacity</a></span>(int&nbsp;capacity)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.html#setFrameQueueCapacity-int-">setFrameQueueCapacity</a></span>(int&nbsp;valuesToHold)</code>
 <div class="block">Sets the maximum number of <code>Frame</code>s that will simultaneously be stored in the
  frame queue.</div>
 </td>
@@ -319,16 +319,16 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <h4>setFrameQueueCapacity</h4>
-<pre>void&nbsp;setFrameQueueCapacity(int&nbsp;capacity)</pre>
+<pre>void&nbsp;setFrameQueueCapacity(int&nbsp;valuesToHold)</pre>
 <div class="block">Sets the maximum number of <code>Frame</code>s that will simultaneously be stored in the
  frame queue. If the queue is full and new <code>Frame</code>s become available, older frames
- will be discarded. The frame queue initially has a capacity of zero.
+ will be discarded. The frame queue initially has a valuesToHold of zero.
 
  <p>Note that calling this method invalidates any frame queue retreived previously
  through <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.html#getFrameQueue--"><code>getFrameQueue()</code></a>.</p></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>capacity</code> - the maximum number of items that may be stored in the frame queue</dd>
+<dd><code>valuesToHold</code> - the maximum number of items that may be stored in the frame queue</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.html#getFrameQueue--"><code>getFrameQueue()</code></a>, 
 <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.html#getFrameQueueCapacity--"><code>getFrameQueueCapacity()</code></a></dd>
@@ -342,10 +342,10 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <h4>getFrameQueueCapacity</h4>
 <pre>int&nbsp;getFrameQueueCapacity()</pre>
-<div class="block">Returns the current capacity of the frame queue.</div>
+<div class="block">Returns the current valuesToHold of the frame queue.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the current capacity of the frame queue.</dd>
+<dd>the current valuesToHold of the frame queue.</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.html#setFrameQueueCapacity-int-"><code>setFrameQueueCapacity(int)</code></a>, 
 <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.html#getFrameQueue--"><code>getFrameQueue()</code></a></dd>

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Environment;
+import android.support.annotation.ColorInt;
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -13,6 +14,7 @@ import com.vuforia.PIXEL_FORMAT;
 import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
 import java.io.File;
@@ -72,7 +74,7 @@ public class CameraJewelOp extends LinearOpMode
             }
             Log.d("MemeMachine", "Instantiating ImageWriter");
 
-            if(img != null && img.getPixels() != null)
+            if (img != null && img.getPixels() != null)
             {
                 Bitmap bm = Bitmap.createBitmap(img.getWidth(), img.getHeight(), Bitmap.Config.RGB_565);
                 bm.copyPixelsFromBuffer(img.getPixels());
@@ -82,7 +84,6 @@ public class CameraJewelOp extends LinearOpMode
                 String filePath = directoryPath + "/bitmap.png";
 
                 // noinspection ResultOfMethodCallIgnored
-
                 new File(directoryPath).mkdirs(); // Make sure that the directory exists
                 try
                 {
@@ -91,15 +92,13 @@ public class CameraJewelOp extends LinearOpMode
                     bm.compress(Bitmap.CompressFormat.PNG, 85, fOut);
                     fOut.flush();
                     fOut.close();
-                }
-                catch(IOException ignored)
+                } catch (IOException ignored)
                 {
                     // lol no
                 }
 
-                double[] red = new double[bm.getWidth()],
-                       green = new double[bm.getWidth()],
-                        blue = new double[bm.getWidth()];
+//                double[][] vals = new double[3][bm.getWidth()];
+                double numR = 0, numG = 0, numB = 0, denomR = 0, denomG = 0, denomB = 0;
                 for (int x = 0; x < bm.getWidth(); x++)
                 {
                     double redSum = 0;
@@ -107,32 +106,87 @@ public class CameraJewelOp extends LinearOpMode
                     double blueSum = 0;
                     for (int y = 0; y < bm.getHeight(); y++)
                     {
-                        int color = bm.getPixel(x, y);
-                        redSum += Color.red(color);
-                        greenSum += Color.green(color);
-                        blueSum += Color.blue(color);
+                        @ColorInt int color = bm.getPixel(x, y);
+                        redSum += (color >> 16) & 0xff;
+                        greenSum += (color >> 8) & 0xff;
+                        blueSum += color & 0xff;
                     }
                     double height = bm.getHeight();
-                    red[x] = redSum / height;
-                    green[x] = greenSum / height;
-                    blue[x] = blueSum / height;
+//                    vals[0][x] = redSum / height;
+//                    vals[1][x] = greenSum / height;
+//                    vals[2][x] = blueSum / height;
+
+
+                    numR += x * (redSum / height);
+                    denomR += (redSum / height);
+                    numG += x * (greenSum / height);
+                    denomG += (greenSum / height);
+                    numB += x * (blueSum / height);
+                    denomB += (blueSum / height);
                 }
 
-                CSVWriter writer = new CSVWriter("JewelTest-" + dateFormat.format(new Date()));
+                final double[] expectedValues = new double[] { numR / denomR, numG / denomG, numB / denomB };
+//                final double[] expectedValues = new double[] { expectedValue(vals[0]), expectedValue(vals[1]), expectedValue(vals[2]) };
+                boolean redLeft = expectedValues[0] < expectedValues[2];
 
-                writer.writeLine("XPos", "Red", "Green", "Blue");
-                for(int i = 0; i < red.length; i++)
+                while(opModeIsActive())
                 {
-                    writer.writeLine(i, red[i], green[i], blue[i]);
+                    telemetry.addData("Ball Position", redLeft ? "Red - Blue" : "Blue - Red");
+                    telemetry.update();
                 }
+//                final double[] means = new double[] { mean(vals[0]), mean(vals[1]), mean(vals[2]) };
+//                final double[] stdDevs = new double[] { stdDev(vals[0], means[0]), stdDev(vals[1], means[1]), stdDev(vals[2], means[2]) };
+//                final double[] thresholds = new double[] { means[0] + stdDevs[0], means[1] + stdDevs[1], means[2] + stdDevs[2] };
+//
+//                List<>
+
             }
         } catch (InterruptedException e)
         {
             // InterruptedException:
             // Thread was interrupted while waiting for the blocking queue to return a value
             // This means (most likely) that the OpMode has already ended
+            // Otherwise, it means something has gone horribly wrong
             // Thus, we don't need to do anything
             // ssuri 01/30/18
         }
+    }
+
+    private static class Range
+    {
+        int start, end;
+    }
+
+    private double expectedValue(double[] arr)
+    {
+        double num = 0;
+        double denom = 0;
+        for(int i = 0; i < arr.length; i++)
+        {
+            num += i * arr[i];
+            denom += arr[i];
+        }
+
+        return num / denom;
+    }
+
+    private double mean(double[] arr)
+    {
+        double sum = 0;
+        for(double d : arr)
+        {
+            sum += d;
+        }
+        return sum / arr.length;
+    }
+
+    private double stdDev(double[] arr, double mean)
+    {
+        double variance = 0;
+        for (double d : arr)
+        {
+            variance += Math.pow(d - mean, 2) / arr.length;
+        }
+        return Math.sqrt(variance);
     }
 }

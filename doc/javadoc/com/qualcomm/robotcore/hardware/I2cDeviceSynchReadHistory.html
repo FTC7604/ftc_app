@@ -143,12 +143,12 @@ var activeTableTab = "activeTableTab";
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchReadHistory.html#getHistoryQueueCapacity--">getHistoryQueueCapacity</a></span>()</code>
-<div class="block">Returns the current capacity of the history queue.</div>
+<div class="block">Returns the current valuesToHold of the history queue.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchReadHistory.html#setHistoryQueueCapacity-int-">setHistoryQueueCapacity</a></span>(int&nbsp;capacity)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchReadHistory.html#setHistoryQueueCapacity-int-">setHistoryQueueCapacity</a></span>(int&nbsp;valuesToHold)</code>
 <div class="block">Sets the maximum number of <a href="../../../../com/qualcomm/robotcore/hardware/TimestampedI2cData.html" title="class in com.qualcomm.robotcore.hardware"><code>TimestampedI2cData</code></a>s that will simultaneously be stored in the
  history queue.</div>
 </td>
@@ -174,16 +174,16 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <h4>setHistoryQueueCapacity</h4>
-<pre>void&nbsp;setHistoryQueueCapacity(int&nbsp;capacity)</pre>
+<pre>void&nbsp;setHistoryQueueCapacity(int&nbsp;valuesToHold)</pre>
 <div class="block">Sets the maximum number of <a href="../../../../com/qualcomm/robotcore/hardware/TimestampedI2cData.html" title="class in com.qualcomm.robotcore.hardware"><code>TimestampedI2cData</code></a>s that will simultaneously be stored in the
  history queue. If the queue is full and new <a href="../../../../com/qualcomm/robotcore/hardware/TimestampedI2cData.html" title="class in com.qualcomm.robotcore.hardware"><code>TimestampedI2cData</code></a>s become available, older
- data will be discarded. The history queue initially has a capacity of zero.
+ data will be discarded. The history queue initially has a valuesToHold of zero.
 
  <p>Note that calling this method invalidates any history queue retrieved previously
  through <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchReadHistory.html#getHistoryQueue--"><code>getHistoryQueue()</code></a>.</p></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>capacity</code> - the maximum number of items that may be stored in the history queue</dd>
+<dd><code>valuesToHold</code> - the maximum number of items that may be stored in the history queue</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchReadHistory.html#getHistoryQueue--"><code>getHistoryQueue()</code></a>, 
 <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchReadHistory.html#getHistoryQueueCapacity--"><code>getHistoryQueueCapacity()</code></a></dd>
@@ -197,10 +197,10 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <h4>getHistoryQueueCapacity</h4>
 <pre>int&nbsp;getHistoryQueueCapacity()</pre>
-<div class="block">Returns the current capacity of the history queue.</div>
+<div class="block">Returns the current valuesToHold of the history queue.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the current capacity of the history queue.</dd>
+<dd>the current valuesToHold of the history queue.</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchReadHistory.html#setHistoryQueueCapacity-int-"><code>setHistoryQueueCapacity(int)</code></a>, 
 <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchReadHistory.html#getHistoryQueue--"><code>getHistoryQueue()</code></a></dd>
