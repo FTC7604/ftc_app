@@ -79,7 +79,7 @@ public class CameraJewelOp extends LinearOpMode
                 Bitmap bm = Bitmap.createBitmap(img.getWidth(), img.getHeight(), Bitmap.Config.RGB_565);
                 bm.copyPixelsFromBuffer(img.getPixels());
 
-
+                /*
                 String directoryPath = Environment.getExternalStorageDirectory().getPath() + "/FIRST/CSVWriter";
                 String filePath = directoryPath + "/bitmap.png";
 
@@ -95,11 +95,12 @@ public class CameraJewelOp extends LinearOpMode
                 } catch (IOException ignored)
                 {
                     // lol no
-                }
+                }*/
 
 //                double[][] vals = new double[3][bm.getWidth()];
                 double numR = 0, numG = 0, numB = 0, denomR = 0, denomG = 0, denomB = 0;
-                for (int x = 0; x < bm.getWidth(); x++)
+                int width = bm.getWidth();
+                for (int x = width/4; x < 3 * (width/4); x++)
                 {
                     double redSum = 0;
                     double greenSum = 0;
