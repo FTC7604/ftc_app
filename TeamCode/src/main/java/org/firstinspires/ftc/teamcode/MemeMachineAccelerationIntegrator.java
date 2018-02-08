@@ -17,14 +17,14 @@ import java.util.Deque;
 
 public class MemeMachineAccelerationIntegrator implements BNO055IMU.AccelerationIntegrator
 {
-	BNO055IMU.Parameters parameters;
-	Position position;
-	Velocity velocity;
-	Acceleration acceleration;
+	private BNO055IMU.Parameters parameters;
+	private Position position;
+	private Velocity velocity;
+	private Acceleration acceleration;
 
-	int capacity = 10;
-	double thresh = 100000; // todo: assign real values
-    LowPassFilter xFilter = new LowPassFilter(capacity, thresh),
+	private int capacity = 10;
+	private double thresh = 100000; // todo: assign real values
+	private LowPassFilter xFilter = new LowPassFilter(capacity, thresh),
                   yFilter = new LowPassFilter(capacity, thresh),
                   zFilter = new LowPassFilter(capacity, thresh);
 
@@ -116,14 +116,14 @@ public class MemeMachineAccelerationIntegrator implements BNO055IMU.Acceleration
 		private int capacity;
 		private double thresh;
 
-		public LowPassFilter(int capacity, double thresh)
+		private LowPassFilter(int capacity, double thresh)
 		{
 			this.capacity = capacity;
 			values = new ArrayDeque<>();
 			this.thresh = thresh;
 		}
 
-		public void add(double value)
+		private void add(double value)
 		{
 		    if(value < thresh)
             {
@@ -131,7 +131,7 @@ public class MemeMachineAccelerationIntegrator implements BNO055IMU.Acceleration
             }
 		}
 
-		public double getCurrentValue()
+		private double getCurrentValue()
 		{
 		    while(values.size() > capacity)
             {

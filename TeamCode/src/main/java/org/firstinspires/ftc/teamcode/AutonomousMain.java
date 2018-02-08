@@ -1,295 +1,234 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.LightSensor;
+import android.graphics.Bitmap;
+import android.support.annotation.ColorInt;
+
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.vuforia.CameraDevice;
+import com.vuforia.Image;
+import com.vuforia.PIXEL_FORMAT;
+import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.NavUtil;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 /**
  * Created by Declan on 11/13/2017.
- *
+ * Mostly deleted by Sameer on 02/07/2018
  */
 
 public class AutonomousMain extends AbstractLinearOpMode {
-    Position position = null;
+    private Location location = null;
+    private Robot7604 robot;
+    private VuforiaTrackable relicTemplate;
+    private VuforiaLocalizer vuforia;
 
-    public enum Position {
-        RedLeft(-1), RedRight(-1), BlueLeft(1), BlueRight(1);
-        private int direction;
-        Position(int direction) {
-            this.direction = direction;
+    public enum Location
+    {
+        RedLeft(true), RedRight(true), BlueLeft(false), BlueRight(false);
+        private boolean red;
+        Location(boolean red) {
+            this.red = red;
         }
     }
 
-    public AutonomousMain(Position position){
-        this.position = position;
+    @SuppressWarnings("WeakerAccess")
+    public AutonomousMain(Location location){
+        this.location = location;
     }
 
-    Robot7604 bot;
     @Override
     public void startLinear()
     {
-        bot = new Robot7604(this.callingOpMode);
-        //PIDAngleControl pid = new PIDAngleControl(this);
+        robot = new Robot7604(this.callingOpMode);
+
+        print("Robot Initialized");
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        //parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new MemeMachineAccelerationIntegrator();
+        parameters.mode = BNO055IMU.SensorMode.IMU;
+
+        robot.imu.initialize(parameters);
+
+        print("IMU Initialized");
+
+        ////////////////////////////
+        // VUFORIA INITIALIZATION //
+        ////////////////////////////
+        int cameraMonitorViewId = hardwareMap.appContext.getResources()
+                .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+
+        VuforiaLocalizer.Parameters vuforiaParameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+
+        vuforiaParameters.vuforiaLicenseKey = "ASv2MNj/////AAAAGQukwPKRd0YcsSlpoJYzs9EdjNGpnGv0mY+oWYr923xV6ZP+Tm9A7ZjZvdw7KY3iqJ/2AXpNLeHZLylMumJd46ZYL4zpkdjPY6OwGwUmQBrgo6MXWgIM6bKgp/0M1SJnb8yYpFjzTAqAXtXqotY5KPiLkelgBeCuPYc+NUAlf6vSxjEr7+Zezid1O2zV3dRV/FlaBJN9MQsgWOvPQfsTiKqgpEr2b4pLG8PMqL/HU3RvuEexsWSv5eN6mWtx8Vt7m+GSBC6xo9vxR+gaTLsi19RAXTPCq4UhoQvrFYIORotVeVa5zIhZXlpMc09NZT25e6DcOPTv2eloL55O2/FK81AGay8e4urLNQ5wF3vknehR";
+
+        vuforiaParameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        vuforia = ClassFactory.createVuforiaLocalizer(vuforiaParameters);
+
+        vuforia.setFrameQueueCapacity(1);
+        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
+
+        CameraDevice cam = CameraDevice.getInstance();
+        cam.setField("auto-whitebalance-lock-supported", "false");
+        VuforiaTrackables relicTrackables = vuforia.loadTrackablesFromAsset("RelicVuMark");
+        relicTemplate = relicTrackables.get(0);
+        relicTemplate.setName("relicVuMarkTemplate");
+
+        relicTrackables.activate();
+
+        print("Vuforia Settings Initialized");
     }
 
     @Override
     public void runLinear()
     {
         long timeInit;
-        int direction = position.direction;
-        int step = 0; // For debugging purposes only
-
-        int cameraMonitorViewId = hardwareMap.appContext.getResources()
-                .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-
-        parameters.vuforiaLicenseKey = "ASv2MNj/////AAAAGQukwPKRd0YcsSlpoJYzs9EdjNGpnGv0mY+oWYr923xV6ZP+Tm9A7ZjZvdw7KY3iqJ/2AXpNLeHZLylMumJd46ZYL4zpkdjPY6OwGwUmQBrgo6MXWgIM6bKgp/0M1SJnb8yYpFjzTAqAXtXqotY5KPiLkelgBeCuPYc+NUAlf6vSxjEr7+Zezid1O2zV3dRV/FlaBJN9MQsgWOvPQfsTiKqgpEr2b4pLG8PMqL/HU3RvuEexsWSv5eN6mWtx8Vt7m+GSBC6xo9vxR+gaTLsi19RAXTPCq4UhoQvrFYIORotVeVa5zIhZXlpMc09NZT25e6DcOPTv2eloL55O2/FK81AGay8e4urLNQ5wF3vknehR";
-
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        VuforiaLocalizer vuforia = ClassFactory
-                .createVuforiaLocalizer(parameters);
-
-
-        VuforiaTrackables relicTrackables = vuforia.loadTrackablesFromAsset("RelicVuMark");
-        VuforiaTrackable relicTemplate = relicTrackables.get(0);
-        relicTemplate.setName("relicVuMarkTemplate");
-
-        relicTrackables.activate();
+        boolean red = location.red;
+        ////////////////////////
+        // IMU INITIALIZATION //
+        ////////////////////////
+        robot.imu.startAccelerationIntegration(new org.firstinspires.ftc.robotcore.external.navigation.Position(), new Velocity(), 100);
 
         timeInit = System.currentTimeMillis();
 
-        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-
-        while(System.currentTimeMillis() - timeInit < 2000 && opModeIsActive()) {
-            vuMark = RelicRecoveryVuMark.from(relicTemplate);
-        }
-
-        telemetry.addData("direction", direction);
-        telemetry.addData("VuMark", vuMark);
-        telemetry.update();
-        sleep(500);
-
-
-
-
-        step++;
-        telemetry.addData("step", step);
-        telemetry.update();
-
-        bot.grip(true);
-
-        sleep(500);
-
-
-        bot.SvingerDvinger.setPower(1);
-        sleep(800);
-        bot.SvingerDvinger.setPower(0);
-        sleep(500);
-
-
-        bot.ColorStick.setPosition(0.75);
-        bot.CSensor.enableLed(true);
-
-        sleep(500);
-
-        timeInit = System.currentTimeMillis();
-
-        step++;
-        telemetry.addData("step", step);
-        telemetry.update();
-        while(System.currentTimeMillis() - timeInit < 1000 && opModeIsActive()) {
-            telemetry.addData("RawCS", bot.CSensor.getRawLightDetected());
-
-            telemetry.update();
-        }
-
-
-        step++;
-        telemetry.addData("step", step);
-
-
-        telemetry.update();
-
-        // blue jewel XOR blue alliance
-        if(bot.CSensor.getRawLightDetected() < 1.5 ^ (direction == 1)){
-            bot.drive(0.2,0);
-            telemetry.addData("Choice", "Forwards");
-            telemetry.update();
-            sleep(600);
-            bot.stop();
-
-
-            bot.CSensor.enableLed(false);
-            bot.ColorStick.setPosition(0);
-            sleep(500);
-
-            bot.drive(direction * 0.2, 0);
-            sleep(direction == -1 ? 1500 : 2700);
-            bot.stop();
-        }
-        else{
-            bot.drive(-0.2,0);
-            telemetry.addData("Choice", "Backwards");
-            telemetry.update();
-            sleep(600);
-            bot.stop();
-
-
-            bot.CSensor.enableLed(false);
-            bot.ColorStick.setPosition(0);
-            sleep(500);
-
-            bot.drive(0.2 * direction, 0);
-            sleep(direction == -1 ? 2700 : 1500);
-            bot.stop();
-        }
-
-        step++;
-        telemetry.addData("step", step);
-        telemetry.update();
-
-        /*
-        bot.drive(-0.2f, 0);
-        sleep(400);
-        bot.stop();
-        sleep(500);
-        */
-        double redGray = 1.3;
-        double blueGray = 1.185;
-
-        double LThreshold = redGray;
-        bot.LSensor.enableLed(true);
-        bot.drive(direction * 0.3, 0);
-        sleep(1000);
-
-
-        step++;
-        telemetry.addData("step", step);
-        telemetry.update();
-
-//        while(-1 * direction * bot.LSensor.getRawLightDetected() < -1 * direction * LThreshold && opModeIsActive()){
-//            bot.drive(direction * 0.3f, 0);
-//            telemetry.addData("LValue", bot.LSensor.getRawLightDetected());
-//            telemetry.update();
+//        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+//
+//        while (opModeIsActive() && System.currentTimeMillis() - timeInit < 2000)
+//        {
+//            vuMark = RelicRecoveryVuMark.from(relicTemplate);
 //        }
 
-        if(direction == -1)
+        // noinspection StatementWithEmptyBody
+        while(opModeIsActive() && !robot.imu.isGyroCalibrated());
+        // while (opModeIsActive() && !imu.isSystemCalibrated());
+        // it might be this second one but the Internet says to use the first one for IMU mode
+
+        print("IMU Calibrated");
+
+        ///////////////////
+        // JEWEL SCORING //
+        ///////////////////
+        long startTime = System.currentTimeMillis();
+        double[] expectedValues = getExpectedValues(getFrame(vuforia));
+        long endTime = System.currentTimeMillis();
+        boolean redLeft = expectedValues[0] < expectedValues[2];
+        // noinspection UnnecessaryLocalVariable
+        boolean shouldGoForward = redLeft; // FIXME
+
+        print("red: %b, redLeft: %b, sgf: %b, execTime=%d", red, redLeft, shouldGoForward, endTime - startTime);
+        Servo lever, spin;
+        if(red)
         {
-            while(bot.LSensor.getRawLightDetected() < LThreshold && opModeIsActive())
-            {
-                bot.drive(-0.3f, 0);
-                telemetry.addData("LValue", bot.LSensor.getRawLightDetected());
-                telemetry.update();
-            }
+            lever = robot.ColorLeverRight;
+            spin = robot.ColorSpinRight;
         }
         else
         {
-            bot.drive(0.3f, 0);
-            long startTime = System.currentTimeMillis();
-            while((System.currentTimeMillis() - startTime) < 100 && opModeIsActive())
+            lever = robot.ColorLeverLeft;
+            spin = robot.ColorSpinLeft;
+        }
+//        lever.setPosition(0.75);
+//        sleep(1000);
+//        spin.setPosition(shouldGoForward ? 0.75 : 0.25);
+//        sleep(1000);
+//        spin.setPosition(0.5);
+//        sleep(1000);
+//        lever.setPosition(0);
+    }
+
+    private void print(Object o, Object... args)
+    {
+        telemetry.addData("", String.format(o.toString(), args));
+        telemetry.update();
+    }
+
+    private double distance(Position pos1, Position pos2)
+    {
+        Position dPos = NavUtil.minus(pos1, pos2);
+        return Math.sqrt(sq(dPos.x) + sq(dPos.y) + sq(dPos.z));
+    }
+
+    private double sq(double d)
+    {
+        return d * d;
+    }
+
+    private Bitmap getFrame(VuforiaLocalizer vuforia)
+    {
+        try
+        {
+            VuforiaLocalizer.CloseableFrame frame = vuforia.getFrameQueue().take();
+
+            Image img = null;
+            for (int i = 0; i < frame.getNumImages(); i++)
             {
-                bot.drive( 0.3f, 0);
-                telemetry.addData("LValue", bot.LSensor.getRawLightDetected());
-                telemetry.update();
+                Image possImg = frame.getImage(i);
+                if (possImg.getFormat() == PIXEL_FORMAT.RGB565)
+                {
+                    img = possImg;
+                }
             }
 
-//            DifferentiatorList dl = new DifferentiatorList(150);
-//            while(opModeIsActive())
-//            {
-//                dl.add(bot.LSensor.getRawLightDetected());
-//                double derivative = dl.derive();
-//                if(Math.abs(derivative) >= 0.007)
-//                {
-//                    break;
-//                }
-//                telemetry.addData("dLValue/dt", derivative);
-//                telemetry.update();
-//            }
+            if (img != null && img.getPixels() != null)
+            {
+                Bitmap bm = Bitmap.createBitmap(img.getWidth(), img.getHeight(), Bitmap.Config.RGB_565);
+                bm.copyPixelsFromBuffer(img.getPixels());
+
+                return bm;
+            }
+        }
+        catch(InterruptedException ignored)
+        {
+            // InterruptedException:
+            // Thread was interrupted while waiting for the blocking queue to return a value
+            // This means (most likely) that the OpMode has already ended
+            // Otherwise, it means something has gone horribly wrong
+            // Thus, we don't need to do anything
+            // ssuri 01/30/18
         }
 
-        step++;
-        telemetry.addData("step", step);
-        telemetry.update();
+        return null;
+    }
 
-        bot.stop();
-        sleep(500);
+    private double[] getExpectedValues(Bitmap bm)
+    {
+        double numR = 0, numG = 0, numB = 0, denomR = 0, denomG = 0, denomB = 0;
+        int width = bm.getWidth();
+        double height = bm.getHeight(); // made double to avoid explicit casting later
 
+        for (int x = 0; x < width; x++)
+        {
+            double redSum = 0;
+            double greenSum = 0;
+            double blueSum = 0;
+            for (int y = 0; y < bm.getHeight(); y++)
+            {
+                @ColorInt int color = bm.getPixel(x, y);
+                redSum += (color >> 16) & 0xff;
+                greenSum += (color >> 8) & 0xff;
+                blueSum += color & 0xff;
+            }
 
-        bot.LSensor.enableLed(false);
-
-
-
-        bot.stop();
-        sleep(1000);
-
-        long rot = 0;
-
-        switch(direction) {
-            case(-1):
-                switch (vuMark) {
-                    case LEFT:
-                        rot = 6000;
-                        break;
-                    case CENTER:
-                        rot = 5000;
-                        break;
-                    default: //RIGHT
-                        rot = 3500;
-                        break;
-                }
-            break;
-            case(1):
-                switch (vuMark) {
-                    case LEFT:
-                        rot = 4500;
-                        break;
-                    case CENTER:
-                        rot = 3500;
-                        break;
-                    default: //RIGHT
-                        rot = 2500;
-                        break;
-                }
-            break;
+            numR += x * (redSum / height);
+            denomR += (redSum / height);
+            numG += x * (greenSum / height);
+            denomG += (greenSum / height);
+            numB += x * (blueSum / height);
+            denomB += (blueSum / height);
         }
 
-        /*bot.drive(-0.3,-0.5);
-        sleep(rot);*/
-
-        int leftwheelthresh = bot.Led1.getCurrentPosition();
-        int rightwheelthresh = bot.Lift.getCurrentPosition();
-
-        while(bot.Led1.getCurrentPosition() - leftwheelthresh + bot.Lift.getCurrentPosition() - rightwheelthresh < rot){
-            bot.drive(-0.3,-0.5);
-        }
-
-        bot.stop();
-        sleep(500);
-        bot.drive(0.4f,0);
-
-        sleep(600);
-        bot.stop();
-        bot.grip(false);
-        sleep(500);
-        bot.drive(-0.2f,0);
-        sleep(500);
-        bot.drive(0.2f, 0);
-        sleep(1000);
-        bot.drive(-0.2f,0);
-        sleep(1000);
-        bot.stop();
-
-
-
-
+        return new double[] { numR / denomR, numG / denomG, numB / denomB };
     }
 }

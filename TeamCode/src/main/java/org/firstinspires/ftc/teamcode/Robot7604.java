@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -10,32 +11,27 @@ import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
 
 /**
  * Created by ssuri on 10/3/17.
+ *
  */
 
 public class Robot7604
 {
-
-    LightSensor LSensor;
-    LightSensor CSensor;
-
     DcMotor FrontLeft;
     DcMotor FrontRight;
     DcMotor BackLeft;
     DcMotor BackRight;
-    DcMotor Lift;//High torque motor
-    DcMotor Slide;
-    DcMotor SvingerDvinger;
-    DcMotor Rudder;
+    DcMotor Lift; // High torque motor
+    DcMotor SpinnerLeft;
+    DcMotor SpinnerRight;
+    DcMotor Flipper;
 
-    Servo ColorStick;
-    Servo LeftHook, RightHook;
-    Servo Twister;
-    Servo Upercut;
-    Servo LeftGrip, RightGrip;
-    Servo LeftGripBottom, RightGripBottom;
+    Servo ColorSpinLeft, ColorSpinRight;
+    Servo ColorLeverLeft, ColorLeverRight;
 
-    DcMotor Led1; //Led stream
-    DcMotor Led2; //Led stream
+    LightSensor SensorL;
+    LightSensor SensorR;
+
+    BNO055IMU imu;
 
     public Robot7604(OpMode op)
     {
@@ -44,36 +40,27 @@ public class Robot7604
 
     public Robot7604(HardwareMap hardwareMap)
     {
-
-        LSensor = hardwareMap.get(LightSensor.class, "LightSensor");
-        CSensor = hardwareMap.get(LightSensor.class, "ColorSensor");
-
         FrontLeft = hardwareMap.dcMotor.get("FrontLeft");
         FrontRight = hardwareMap.dcMotor.get("FrontRight");
         BackLeft = hardwareMap.dcMotor.get("BackLeft");
         BackRight = hardwareMap.dcMotor.get("BackRight");
-        Slide = hardwareMap.dcMotor.get("Slide");
         Lift = hardwareMap.dcMotor.get("Lift");
-        Rudder = hardwareMap.dcMotor.get("Rudder");
+        SpinnerLeft = hardwareMap.dcMotor.get("SpinnerLeft");
+        SpinnerRight = hardwareMap.dcMotor.get("SpinnerRight");
+        Flipper = hardwareMap.dcMotor.get("Flipper");
 
-        LeftHook = hardwareMap.servo.get("LeftHook");
-        RightHook = hardwareMap.servo.get("RightHook");
-        Twister = hardwareMap.servo.get("Twister");
-        Upercut = hardwareMap.servo.get("Upercut");
-        LeftGrip = hardwareMap.servo.get("LeftGrip");
-        RightGrip = hardwareMap.servo.get("RightGrip");
-        LeftGripBottom = hardwareMap.servo.get("LeftGripBottom");
-        RightGripBottom = hardwareMap.servo.get("RightGripBottom");
-        SvingerDvinger = hardwareMap.dcMotor.get("SvingerDvinger");
-        ColorStick = hardwareMap.servo.get("ColorStick");
+        FrontRight.setDirection(REVERSE);
+        BackRight.setDirection(REVERSE);
 
-        Led1 = hardwareMap.dcMotor.get("Led1");
-        Led2 = hardwareMap.dcMotor.get("Led2");
+        ColorSpinLeft = hardwareMap.servo.get("ColorSpinLeft");
+        ColorSpinRight = hardwareMap.servo.get("ColorSpinRight");
+        ColorLeverLeft = hardwareMap.servo.get("ColorLeverLeft");
+        ColorLeverRight = hardwareMap.servo.get("ColorLeverRight");
 
-        FrontLeft.setDirection(REVERSE);
-        //FrontRight.setDirection(REVERSE);
-        BackLeft.setDirection(REVERSE);
-        //BackRight.setDirection(REVERSE);
+        SensorL = hardwareMap.get(LightSensor.class, "SensorL");
+        SensorR = hardwareMap.get(LightSensor.class, "SensorR");
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
     }
 
     public void drive(double power, double rotation){
@@ -90,22 +77,8 @@ public class Robot7604
         BackLeft.setPower(0);
         BackRight.setPower(0);
         Lift.setPower(0);
-        Slide.setPower(0);
-    }
-
-    public void grip(boolean state){
-        if(state){
-            LeftGrip.setPosition(0.5);
-            LeftGripBottom.setPosition(0.5);
-            RightGrip.setPosition(0.5);
-            RightGripBottom.setPosition(0.5);
-        }
-        else{
-            LeftGrip.setPosition(1);
-            LeftGripBottom.setPosition(1);
-            RightGrip.setPosition(0);
-            RightGripBottom.setPosition(0);
-        }
+        SpinnerLeft.setPower(0);
+        SpinnerRight.setPower(0);
     }
 }
 

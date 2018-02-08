@@ -132,7 +132,7 @@ public class CameraJewelOp extends LinearOpMode
 
                 while(opModeIsActive())
                 {
-                    telemetry.addData("Ball Position", redLeft ? "Red - Blue" : "Blue - Red");
+                    telemetry.addData("Ball Location", redLeft ? "Red - Blue" : "Blue - Red");
                     telemetry.update();
                 }
 //                final double[] means = new double[] { mean(vals[0]), mean(vals[1]), mean(vals[2]) };

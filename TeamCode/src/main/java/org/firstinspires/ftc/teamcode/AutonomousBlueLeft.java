@@ -13,7 +13,7 @@ public class AutonomousBlueLeft extends LinearOpMode
     @Override
     public void runOpMode()
     {
-        AbstractLinearOpMode mainOp = new AutonomousMain(AutonomousMain.Position.BlueLeft);
+        AbstractLinearOpMode mainOp = new AutonomousMain(AutonomousMain.Location.BlueLeft);
         mainOp.callingOpMode = this;
         mainOp.initVars();
 
