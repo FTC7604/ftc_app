@@ -21,7 +21,13 @@ public class MemeOp7604 extends OpMode
 
 	@Override
 	public void start()
-	{}
+	{
+		robot.ColorSpinLeft.setPosition(0.7);
+		robot.ColorSpinRight.setPosition(0.4);
+
+		robot.ColorLeverLeft.setPosition(1);
+		robot.ColorLeverRight.setPosition(0);
+	}
 
 	@Override
 	public void loop()
@@ -60,6 +66,7 @@ public class MemeOp7604 extends OpMode
 		 * else if(gamepad1.y) { if(power == 1) { power = powerLevels; } else { power--;
 		 * } }
 		 */
+
 
 		if (gamepad1.dpad_left)
 		{

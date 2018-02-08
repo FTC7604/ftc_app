@@ -128,6 +128,14 @@ public class AutonomousMain extends AbstractLinearOpMode {
         boolean shouldGoForward = redLeft; // FIXME
 
         print("red: %b, redLeft: %b, sgf: %b, execTime=%d", red, redLeft, shouldGoForward, endTime - startTime);
+
+        // Setting Servos to their starting position, fixes random servo movement
+        robot.ColorSpinLeft.setPosition(0.7);
+        robot.ColorSpinRight.setPosition(0.4);
+
+        robot.ColorLeverLeft.setPosition(1);
+        robot.ColorLeverRight.setPosition(0);
+
         Servo lever, spin;
         if(red)
         {
@@ -139,13 +147,14 @@ public class AutonomousMain extends AbstractLinearOpMode {
             lever = robot.ColorLeverLeft;
             spin = robot.ColorSpinLeft;
         }
-//        lever.setPosition(0.75);
-//        sleep(1000);
-//        spin.setPosition(shouldGoForward ? 0.75 : 0.25);
-//        sleep(1000);
-//        spin.setPosition(0.5);
-//        sleep(1000);
-//        lever.setPosition(0);
+        lever.setPosition(0.75);
+        sleep(1000);
+        spin.setPosition(shouldGoForward ? 0.75 : 0.25);
+        sleep(1000);
+        spin.setPosition(0.5);
+        sleep(1000);
+        lever.setPosition(0);
+
     }
 
     private void print(Object o, Object... args)
