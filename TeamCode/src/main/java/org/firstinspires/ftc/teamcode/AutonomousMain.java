@@ -13,7 +13,6 @@ import com.vuforia.Vuforia;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.NavUtil;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
-import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
@@ -27,6 +26,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 public class AutonomousMain extends AbstractLinearOpMode {
     private Location location = null;
     private Robot7604 robot;
+    @SuppressWarnings("FieldCanBeLocal")
     private VuforiaTrackable relicTemplate;
     private VuforiaLocalizer vuforia;
 
@@ -34,13 +34,15 @@ public class AutonomousMain extends AbstractLinearOpMode {
     {
         RedLeft(true), RedRight(true), BlueLeft(false), BlueRight(false);
         private boolean red;
-        Location(boolean red) {
+        Location(boolean red)
+        {
             this.red = red;
         }
     }
 
     @SuppressWarnings("WeakerAccess")
-    public AutonomousMain(Location location){
+    public AutonomousMain(Location location)
+    {
         this.location = location;
     }
 
@@ -94,14 +96,14 @@ public class AutonomousMain extends AbstractLinearOpMode {
     @Override
     public void runLinear()
     {
-        long timeInit;
         boolean red = location.red;
         ////////////////////////
         // IMU INITIALIZATION //
         ////////////////////////
         robot.imu.startAccelerationIntegration(new org.firstinspires.ftc.robotcore.external.navigation.Position(), new Velocity(), 100);
 
-        timeInit = System.currentTimeMillis();
+        // noinspection unused
+        long timeInit = System.currentTimeMillis();
 
 //        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
 //
@@ -148,9 +150,11 @@ public class AutonomousMain extends AbstractLinearOpMode {
 //        lever.setPosition(0);
     }
 
-    private void print(Object o, Object... args)
+    private void print(Object... o)
     {
-        telemetry.addData("", String.format(o.toString(), args));
+        Object[] args = new Object[o.length - 1];
+        System.arraycopy(o, 1, args, 0, o.length - 1);
+        telemetry.addData("", String.format(o[0].toString(), args));
         telemetry.update();
     }
 
@@ -192,7 +196,7 @@ public class AutonomousMain extends AbstractLinearOpMode {
         catch(InterruptedException ignored)
         {
             // InterruptedException:
-            // Thread was interrupted while waiting for the blocking queue to return a value
+            // Thread was interrupted while waiting or the blocking queue to return a value
             // This means (most likely) that the OpMode has already ended
             // Otherwise, it means something has gone horribly wrong
             // Thus, we don't need to do anything
