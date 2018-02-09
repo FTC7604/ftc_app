@@ -17,7 +17,7 @@ public class AutonomousBlueRight extends LinearOpMode
         mainOp.callingOpMode = this;
         mainOp.initVars();
 
-        mainOp.startLinear();
+        mainOp.initLinear();
         waitForStart();
         mainOp.runLinear();
     }

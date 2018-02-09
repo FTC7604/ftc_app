@@ -38,6 +38,6 @@ public abstract class AbstractLinearOpMode
         callingOpMode.sleep(milliseconds);
     }
 
-    public abstract void startLinear();
+    public abstract void initLinear();
     public abstract void runLinear();
 }

@@ -14,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import static java.lang.Math.abs;
 
 public class MemeMachineAccelerationIntegrator implements BNO055IMU.AccelerationIntegrator
 {
@@ -23,21 +24,15 @@ public class MemeMachineAccelerationIntegrator implements BNO055IMU.Acceleration
 	private Acceleration acceleration;
 
 	private int capacity = 10;
-	private double thresh = 100000; // todo: assign real values
-	private LowPassFilter xFilter = new LowPassFilter(capacity, thresh),
-                  yFilter = new LowPassFilter(capacity, thresh),
-                  zFilter = new LowPassFilter(capacity, thresh);
+	private double thresh = 0.5;
 
     private Acceleration filter(Acceleration acceleration)
     {
-        xFilter.add(acceleration.xAccel);
-        yFilter.add(acceleration.yAccel);
-        zFilter.add(acceleration.zAccel);
-        acceleration.xAccel = xFilter.getCurrentValue();
-        acceleration.yAccel = yFilter.getCurrentValue();
-        acceleration.zAccel = zFilter.getCurrentValue();
-        return acceleration;
-
+        Acceleration outAccel = new Acceleration();
+        outAccel.xAccel = abs(acceleration.xAccel) < thresh ? 0 : acceleration.xAccel;
+        outAccel.yAccel = abs(acceleration.yAccel) < thresh ? 0 : acceleration.yAccel;
+        outAccel.zAccel = abs(acceleration.zAccel) < thresh ? 0 : acceleration.zAccel;
+        return outAccel;
     }
 
 	public Position getPosition()
@@ -107,44 +102,6 @@ public class MemeMachineAccelerationIntegrator implements BNO055IMU.Acceleration
 							position);
 				}
 			}
-		}
-	}
-
-	private class LowPassFilter
-	{
-		private Deque<Double> values;
-		private int capacity;
-		private double thresh;
-
-		private LowPassFilter(int capacity, double thresh)
-		{
-			this.capacity = capacity;
-			values = new ArrayDeque<>();
-			this.thresh = thresh;
-		}
-
-		private void add(double value)
-		{
-		    if(value < thresh)
-            {
-                values.addFirst(value);
-            }
-		}
-
-		private double getCurrentValue()
-		{
-		    while(values.size() > capacity)
-            {
-                values.removeLast();
-            }
-
-            double sum = 0;
-            for (double value : values)
-            {
-                sum += value;
-            }
-
-            return sum / values.size();
 		}
 	}
 }

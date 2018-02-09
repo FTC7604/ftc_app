@@ -47,7 +47,7 @@ public class AutonomousMain extends AbstractLinearOpMode {
     }
 
     @Override
-    public void startLinear()
+    public void initLinear()
     {
         robot = new Robot7604(this.callingOpMode);
 
@@ -84,11 +84,12 @@ public class AutonomousMain extends AbstractLinearOpMode {
 
         CameraDevice cam = CameraDevice.getInstance();
         cam.setField("auto-whitebalance-lock-supported", "false");
-        VuforiaTrackables relicTrackables = vuforia.loadTrackablesFromAsset("RelicVuMark");
-        relicTemplate = relicTrackables.get(0);
-        relicTemplate.setName("relicVuMarkTemplate");
 
-        relicTrackables.activate();
+//        VuforiaTrackables relicTrackables = vuforia.loadTrackablesFromAsset("RelicVuMark");
+//        relicTemplate = relicTrackables.get(0);
+//        relicTemplate.setName("relicVuMarkTemplate");
+//
+//        relicTrackables.activate();
 
         print("Vuforia Settings Initialized");
     }
@@ -97,9 +98,9 @@ public class AutonomousMain extends AbstractLinearOpMode {
     public void runLinear()
     {
         boolean red = location.red;
-        ////////////////////////
-        // IMU INITIALIZATION //
-        ////////////////////////
+        ///////////////////////////////
+        // IMU INITIALIZATION PART 2 //
+        ///////////////////////////////
         robot.imu.startAccelerationIntegration(new org.firstinspires.ftc.robotcore.external.navigation.Position(), new Velocity(), 100);
 
         // noinspection unused
@@ -112,24 +113,17 @@ public class AutonomousMain extends AbstractLinearOpMode {
 //            vuMark = RelicRecoveryVuMark.from(relicTemplate);
 //        }
 
-        // noinspection StatementWithEmptyBody
-        while(opModeIsActive() && !robot.imu.isGyroCalibrated());
-        // while (opModeIsActive() && !imu.isSystemCalibrated());
-        // it might be this second one but the Internet says to use the first one for IMU mode
-
-        print("IMU Calibrated");
-
         ///////////////////
         // JEWEL SCORING //
         ///////////////////
         long startTime = System.currentTimeMillis();
         double[] expectedValues = getExpectedValues(getFrame(vuforia));
         long endTime = System.currentTimeMillis();
-        boolean redLeft = expectedValues[0] < expectedValues[2];
-        // noinspection UnnecessaryLocalVariable
-        boolean shouldGoForward = redLeft; // FIXME
+        boolean redLeft = (expectedValues[0] < expectedValues[2]) ^ red;
 
-        print("red: %b, redLeft: %b, sgf: %b, execTime=%d", red, redLeft, shouldGoForward, endTime - startTime);
+        print("red: %b, redLeft: %b, execTime=%d", red, redLeft, endTime - startTime);
+
+        sleep(5000);
 
         // Setting Servos to their starting position, fixes random servo movement
         robot.ColorSpinLeft.setPosition(0.7);
@@ -138,24 +132,34 @@ public class AutonomousMain extends AbstractLinearOpMode {
         robot.ColorLeverLeft.setPosition(1);
         robot.ColorLeverRight.setPosition(0);
 
-        Servo lever, spin;
         if(red)
         {
-            lever = robot.ColorLeverRight;
-            spin = robot.ColorSpinRight;
+            robot.ColorLeverRight.setPosition(0.75);
+            sleep(1000);
+            robot.ColorSpinRight.setPosition(redLeft ? 0.75 : 0.205);
+            sleep(1000);
+            robot.ColorLeverRight.setPosition(0);
+            sleep(1000);
+            robot.ColorSpinRight.setPosition(0.4);
         }
         else
         {
-            lever = robot.ColorLeverLeft;
-            spin = robot.ColorSpinLeft;
+            robot.ColorLeverLeft.setPosition(0.25);
+            sleep(1000);
+            robot.ColorSpinLeft.setPosition(redLeft ? 0.5 : 1);
+            sleep(1000);
+            robot.ColorLeverLeft.setPosition(1);
+            sleep(1000);
+            robot.ColorSpinLeft.setPosition(0.7);
         }
-        lever.setPosition(0.75);
-        sleep(1000);
-        spin.setPosition(shouldGoForward ? 0.75 : 0.25);
-        sleep(1000);
-        spin.setPosition(0.5);
-        sleep(1000);
-        lever.setPosition(0);
+
+        // Wait for IMU calibration
+        // noinspection StatementWithEmptyBody
+        while(opModeIsActive() && !robot.imu.isGyroCalibrated());
+        // while (opModeIsActive() && !imu.isSystemCalibrated());
+        // it might be this second one but the Internet says to use the first one for IMU mode
+
+        print("IMU Calibrated");
 
     }
 
@@ -221,12 +225,12 @@ public class AutonomousMain extends AbstractLinearOpMode {
         int width = bm.getWidth();
         double height = bm.getHeight(); // made double to avoid explicit casting later
 
-        for (int x = 0; x < width; x++)
+        for (int x = 0; x < width; x += 2)
         {
             double redSum = 0;
             double greenSum = 0;
             double blueSum = 0;
-            for (int y = 0; y < bm.getHeight(); y++)
+            for (int y = 0; y < bm.getHeight(); y += 2)
             {
                 @ColorInt int color = bm.getPixel(x, y);
                 redSum += (color >> 16) & 0xff;
