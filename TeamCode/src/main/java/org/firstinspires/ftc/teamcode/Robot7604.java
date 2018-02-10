@@ -77,6 +77,7 @@ public class Robot7604
         BackLeft.setPower(0);
         BackRight.setPower(0);
         Lift.setPower(0);
+        Flipper.setPower(0);
         SpinnerLeft.setPower(0);
         SpinnerRight.setPower(0);
     }

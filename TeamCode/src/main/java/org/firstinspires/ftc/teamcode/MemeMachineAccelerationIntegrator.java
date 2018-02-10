@@ -24,7 +24,7 @@ public class MemeMachineAccelerationIntegrator implements BNO055IMU.Acceleration
 	private Acceleration acceleration;
 
 	private int capacity = 10;
-	private double thresh = 0.5;
+	private double thresh = 0.0;
 
     private Acceleration filter(Acceleration acceleration)
     {

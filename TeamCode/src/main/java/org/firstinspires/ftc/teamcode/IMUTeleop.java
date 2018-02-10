@@ -78,11 +78,14 @@ public class IMUTeleop extends OpMode
             else
             {
                 Position dPos = NavUtil.minus(startPos, robot.imu.getPosition());
+
+
                 double dist = Math.sqrt(sq(dPos.x) + sq(dPos.y) + sq(dPos.z));
                 Acceleration a = robot.imu.getLinearAcceleration();
 //                robot.imu.
                 telemetry.addData("IMU Accel", "acc [%f, %f, %f]", a.xAccel, a.yAccel, a.zAccel);
-                telemetry.addData("IMU Distance", "%f = [%f, %f, %f]", dist, dPos.x, dPos.y, dPos.z);
+                //telemetry.addData("IMU Distance", "%f = [%f, %f, %f]", dist, dPos.x, dPos.y, dPos.z);
+                telemetry.addData("IMU Distance", "%f = [%f, %f, %f]", dist, robot.imu.getPosition().x, robot.imu.getPosition().y, robot.imu.getPosition().z);
             }
         }
         else

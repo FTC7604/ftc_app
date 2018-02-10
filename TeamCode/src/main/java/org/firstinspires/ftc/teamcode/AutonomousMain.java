@@ -12,11 +12,15 @@ import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.NavUtil;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+
+import static java.lang.Math.abs;
 
 /**
  * Created by Declan on 11/13/2017.
@@ -32,11 +36,13 @@ public class AutonomousMain extends AbstractLinearOpMode {
 
     public enum Location
     {
-        RedLeft(true), RedRight(true), BlueLeft(false), BlueRight(false);
+        RedLeft(true, true), RedRight(true, false), BlueLeft(false, true), BlueRight(false, false);
         private boolean red;
-        Location(boolean red)
+        private boolean left;
+        Location(boolean red, boolean left)
         {
             this.red = red;
+            this.left = left;
         }
     }
 
@@ -85,11 +91,11 @@ public class AutonomousMain extends AbstractLinearOpMode {
         CameraDevice cam = CameraDevice.getInstance();
         cam.setField("auto-whitebalance-lock-supported", "false");
 
-//        VuforiaTrackables relicTrackables = vuforia.loadTrackablesFromAsset("RelicVuMark");
-//        relicTemplate = relicTrackables.get(0);
-//        relicTemplate.setName("relicVuMarkTemplate");
-//
-//        relicTrackables.activate();
+        VuforiaTrackables relicTrackables = vuforia.loadTrackablesFromAsset("RelicVuMark");
+        relicTemplate = relicTrackables.get(0);
+        relicTemplate.setName("relicVuMarkTemplate");
+
+        relicTrackables.activate();
 
         print("Vuforia Settings Initialized");
     }
@@ -97,7 +103,13 @@ public class AutonomousMain extends AbstractLinearOpMode {
     @Override
     public void runLinear()
     {
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+
+        print(vuMark);
+
         boolean red = location.red;
+        boolean left = location.left;
+
         ///////////////////////////////
         // IMU INITIALIZATION PART 2 //
         ///////////////////////////////
@@ -119,9 +131,9 @@ public class AutonomousMain extends AbstractLinearOpMode {
         long startTime = System.currentTimeMillis();
         double[] expectedValues = getExpectedValues(getFrame(vuforia));
         long endTime = System.currentTimeMillis();
-        boolean redLeft = (expectedValues[0] < expectedValues[2]) ^ red;
+        boolean blueLeft = (expectedValues[0] < expectedValues[2]) ^ red;
 
-        print("red: %b, redLeft: %b, execTime=%d", red, redLeft, endTime - startTime);
+        print("red: %b, blueLeft: %b, execTime=%d", red, blueLeft, endTime - startTime);
 
         sleep(5000);
 
@@ -134,24 +146,150 @@ public class AutonomousMain extends AbstractLinearOpMode {
 
         if(red)
         {
-            robot.ColorLeverRight.setPosition(0.75);
-            sleep(1000);
-            robot.ColorSpinRight.setPosition(redLeft ? 0.75 : 0.205);
-            sleep(1000);
-            robot.ColorLeverRight.setPosition(0);
-            sleep(1000);
-            robot.ColorSpinRight.setPosition(0.4);
-        }
-        else
-        {
             robot.ColorLeverLeft.setPosition(0.25);
             sleep(1000);
-            robot.ColorSpinLeft.setPosition(redLeft ? 0.5 : 1);
+            robot.ColorSpinLeft.setPosition(blueLeft ? 0.5 : 1);
             sleep(1000);
             robot.ColorLeverLeft.setPosition(1);
             sleep(1000);
             robot.ColorSpinLeft.setPosition(0.7);
         }
+        else
+        {
+            robot.ColorLeverRight.setPosition(0.75);
+            sleep(1000);
+            robot.ColorSpinRight.setPosition(blueLeft ? 0.75 : 0.205);
+            sleep(1000);
+            robot.ColorLeverRight.setPosition(0);
+            sleep(1000);
+            robot.ColorSpinRight.setPosition(0.4);
+        }
+        /*
+        while(opModeIsActive()){
+            print("FrontLeft: " + robot.FrontLeft.getCurrentPosition() +
+                    " FrontRight: " + robot.FrontRight.getCurrentPosition() +
+                    " BackLeft: " + robot.BackLeft.getCurrentPosition() +
+                    " BackRight: " + robot.BackRight.getCurrentPosition());
+        }*/
+
+
+        double first_move_th = 0;
+
+        double fl = robot.FrontLeft.getCurrentPosition();
+        double fr = robot.FrontRight.getCurrentPosition();
+
+        double bl = robot.BackLeft.getCurrentPosition();
+        double br = robot.BackRight.getCurrentPosition();
+
+
+
+        while(first_move_th < 9000) {
+            robot.FrontLeft.setPower(0.5);
+            robot.FrontRight.setPower(0.5);
+            robot.BackLeft.setPower(0.5);
+            robot.BackRight.setPower(0.5);
+
+            first_move_th = Math.max(abs(robot.FrontLeft.getCurrentPosition() - fl) + abs(robot.BackLeft.getCurrentPosition() - bl),
+                    abs(robot.FrontRight.getCurrentPosition() - fr) + abs(robot.BackRight.getCurrentPosition() - br)
+            );
+
+        }
+        robot.stop();
+        sleep(1000);
+
+        double turnVal = 0;
+        if(red){
+            if(left){
+                switch(vuMark){
+                    case LEFT:
+                        turnVal = 35;
+                        break;
+                    case CENTER:
+                        turnVal = 60;
+                        break;
+                    default:
+                        turnVal = 85;
+                        break;
+                }
+            }
+            else{
+                switch(vuMark){
+                    case LEFT:
+                        turnVal = 50;
+                        break;
+                    case CENTER:
+                        turnVal = 35;
+                        break;
+                    default:
+                        turnVal = 20;
+                        break;
+                }
+            }
+        }
+        else{
+            if(left){
+                switch(vuMark){
+                    case LEFT:
+                        turnVal = 85;
+                        break;
+                    case CENTER:
+                        turnVal = 60;
+                        break;
+                    default:
+                        turnVal = 35;
+                        break;
+                }
+            }
+            else{
+                switch(vuMark){
+                    case LEFT:
+                        turnVal = 20;
+                        break;
+                    case CENTER:
+                        turnVal = 35;
+                        break;
+                    default:
+                        turnVal = 50;
+                        break;
+                }
+            }
+        }
+
+        double angularFirst = robot.imu.getAngularOrientation().firstAngle;
+
+        /*
+        while(opModeIsActive()) {
+            print(robot.imu.getAngularOrientation().firstAngle - angularFirst);
+        }*/
+
+        while(abs(robot.imu.getAngularOrientation().firstAngle - angularFirst) < turnVal){
+
+            if(red ^ left){
+                robot.FrontLeft.setPower(0.5);
+                robot.BackLeft.setPower(0.5);
+            }
+            else{
+                robot.FrontRight.setPower(0.5);
+                robot.BackRight.setPower(0.5);
+            }
+
+        }
+        robot.stop();
+
+        robot.drive(0.5,0);
+        sleep(2000);
+        robot.stop();
+        robot.Flipper.setPower(-0.5);
+        sleep(1000);
+        robot.drive(-0.5, 0);
+        sleep(500);
+        robot.stop();
+        robot.Flipper.setPower(0.5);
+        sleep(1500);
+        robot.stop();
+        robot.drive(-0.5,0);
+        sleep(750);
+        robot.stop();
 
         // Wait for IMU calibration
         // noinspection StatementWithEmptyBody
