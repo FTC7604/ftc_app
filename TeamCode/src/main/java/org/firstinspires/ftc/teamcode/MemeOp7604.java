@@ -42,10 +42,10 @@ public class MemeOp7604 extends OpMode
 		telemetry.addData("Encoder 3", robot.FrontRight.getCurrentPosition());
 		telemetry.addData("Encoder 4", robot.BackRight.getCurrentPosition());
 
-		double leftPower1 = (gamepad2.left_stick_y - gamepad2.right_stick_x);
-		double rightPower1 = (gamepad2.left_stick_y + gamepad2.right_stick_x);
-		double rightPower2 = -1 * (gamepad1.left_stick_y - gamepad1.right_stick_x);
-		double leftPower2 = -1 * (gamepad1.left_stick_y + gamepad1.right_stick_x);
+		double leftPower1 = -1 * (gamepad2.left_stick_y + gamepad2.right_stick_x);
+		double rightPower1 = -1 * (gamepad2.left_stick_y - gamepad2.right_stick_x);
+		double rightPower2 = (gamepad1.left_stick_y + gamepad1.right_stick_x);
+		double leftPower2 = (gamepad1.left_stick_y - gamepad1.right_stick_x);
 
         robot.FrontRight.setPower(rightPower1 + rightPower2);
         robot.FrontLeft.setPower(leftPower1 + leftPower2);

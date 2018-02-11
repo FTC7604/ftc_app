@@ -183,7 +183,7 @@ public class AutonomousMain extends AbstractLinearOpMode {
 
 
 
-        while(first_move_th < 9000) {
+        while(first_move_th < (left ? 11000 : 9000)) {
             robot.FrontLeft.setPower(0.5);
             robot.FrontRight.setPower(0.5);
             robot.BackLeft.setPower(0.5);
@@ -202,26 +202,26 @@ public class AutonomousMain extends AbstractLinearOpMode {
             if(left){
                 switch(vuMark){
                     case LEFT:
-                        turnVal = 35;
-                        break;
-                    case CENTER:
                         turnVal = 60;
                         break;
+                    case RIGHT:
+                        turnVal = 100;
+                        break;
                     default:
-                        turnVal = 85;
+                        turnVal = 80;
                         break;
                 }
             }
             else{
                 switch(vuMark){
                     case LEFT:
-                        turnVal = 50;
+                        turnVal = 55;
                         break;
-                    case CENTER:
-                        turnVal = 35;
+                    case RIGHT:
+                        turnVal = 25;
                         break;
                     default:
-                        turnVal = 20;
+                        turnVal = 40;
                         break;
                 }
             }
@@ -230,26 +230,26 @@ public class AutonomousMain extends AbstractLinearOpMode {
             if(left){
                 switch(vuMark){
                     case LEFT:
-                        turnVal = 85;
+                        turnVal = 100;
                         break;
-                    case CENTER:
+                    case RIGHT:
                         turnVal = 60;
                         break;
                     default:
-                        turnVal = 35;
+                        turnVal = 80;
                         break;
                 }
             }
             else{
                 switch(vuMark){
                     case LEFT:
-                        turnVal = 20;
+                        turnVal = 25;
                         break;
-                    case CENTER:
-                        turnVal = 35;
+                    case RIGHT:
+                        turnVal = 55;
                         break;
                     default:
-                        turnVal = 50;
+                        turnVal = 40;
                         break;
                 }
             }
@@ -289,6 +289,12 @@ public class AutonomousMain extends AbstractLinearOpMode {
         robot.stop();
         robot.drive(-0.5,0);
         sleep(750);
+        robot.stop();
+        sleep(500);
+        robot.drive(0.5,0);
+        sleep(2000);
+        robot.drive(-0.5,0);
+        sleep(1000);
         robot.stop();
 
         // Wait for IMU calibration
